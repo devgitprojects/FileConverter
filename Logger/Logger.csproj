@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6FDCB212-1BF5-475F-A70F-EC108F6509F0}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>FileConverter</RootNamespace>
-    <AssemblyName>FileConverter</AssemblyName>
+    <ProjectGuid>{12B28560-F80B-4A1E-9E5C-5C420CD6977E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Logger</RootNamespace>
+    <AssemblyName>Logger</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,29 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants\LogMessages.cs" />
-    <Compile Include="Converters\BaseConverter.cs" />
-    <Compile Include="Converters\BinaryBasedConverter.cs" />
-    <Compile Include="Converters\XmlBasedConverter.cs" />
-    <Compile Include="Exceptions\CreateFileException.cs" />
-    <Compile Include="Exceptions\FileException.cs" />
-    <Compile Include="Exceptions\ReadFileException.cs" />
-    <Compile Include="Exceptions\RemoveFileException.cs" />
-    <Compile Include="Exceptions\SaveFileException.cs" />
-    <Compile Include="Models\BaseFileInfo.cs" />
-    <Compile Include="Models\BinaryBasedFileInfo.cs" />
-    <Compile Include="Models\XmlBasedFileInfo.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="FileLogger.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Logger\Logger.csproj">
-      <Project>{12B28560-F80B-4A1E-9E5C-5C420CD6977E}</Project>
-      <Name>Logger</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
