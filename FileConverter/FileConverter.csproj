@@ -44,11 +44,9 @@
   <ItemGroup>
     <Compile Include="Constants\LogMessages.cs" />
     <Compile Include="Converters\BaseConverter.cs" />
-    <Compile Include="Converters\BinaryBasedConverter.cs" />
     <Compile Include="Converters\BinaryBasedSerializer.cs" />
     <Compile Include="Converters\ISerializer.cs" />
     <Compile Include="Converters\SerializerSelector.cs" />
-    <Compile Include="Converters\Converter.cs" />
     <Compile Include="Converters\XmlBasedSerializer.cs" />
     <Compile Include="Exceptions\CreateFileException.cs" />
     <Compile Include="Exceptions\FileException.cs" />

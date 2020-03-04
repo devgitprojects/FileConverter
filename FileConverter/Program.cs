@@ -18,69 +18,147 @@ namespace FileConverter
             try
             {
 
-                Converter xmlConv = new Converter( new XmlBasedSerializer<Document>());
+                //BaseConverter<Document> xmlConv = new BaseConverter<Document>(new XmlBasedSerializer<Document>());
+                BaseConverter<List<BinaryBasedFileInfo>> binConv = new BaseConverter<List<BinaryBasedFileInfo>>(new BinaryBasedSerializer());
+
                 string path = @"C:\Temp";
-                
-                List<XmlBasedFileInfo> fileContent = new List<XmlBasedFileInfo>
+
+                List<BinaryBasedFileInfo> fileContent = new List<BinaryBasedFileInfo>
                 {
-                    new XmlBasedFileInfo
+                    new BinaryBasedFileInfo
                     {
-                        BrandName = "Nissan",
+                        Header = 111,
+                        RecordsCount = 2,
                         Date = DateTime.Now,
-                        Price = 1
+                        BrandNameLength = 6,
+                        BrandName = "Nissan",
+                        Price = 1,
+                        
                     },
-                    new XmlBasedFileInfo
+                    new BinaryBasedFileInfo
                     {
-                        BrandName = "Mazda",
+                        Header = 222,
+                        RecordsCount = 2,
                         Date = DateTime.Now.AddHours(1),
+                        BrandNameLength = 5,
+                        BrandName = "Mazda",
                         Price = 2
                     }
                 };
 
-                Document doc = new Document(fileContent);
-                Dictionary<string, ISerializable> files = new Dictionary<string, ISerializable>();
+                Dictionary<string, List<BinaryBasedFileInfo>> files = new Dictionary<string, List<BinaryBasedFileInfo>>();
 
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 1; i++)
                 {
-                    files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), doc);
+                    files.Add(Path.Combine(path, String.Format("{0}.cbin", i)), fileContent);
                 }
-               
-                xmlConv.Save(files);
 
-                var read = xmlConv.Read(files.Keys.ToArray());
+                binConv.Save(files);
+
+                var read = binConv.Read(files.Keys.ToArray());
 
                 var file = read.FirstOrDefault();
-                var doc1 = file.Value as Document;
-                doc1.Cars[1].BrandName = "SUZUKI";
-                doc1.Cars.RemoveAt(0);
+                var doc1 = file.Value as List<BinaryBasedFileInfo>;
+                doc1[1].BrandName = "SUZUKI";
+                doc1.RemoveAt(0);
 
-                //var toSave = new Dictionary<string, ISerializable>();
-                //toSave.Add(file.Key, file.Value);
-                xmlConv.Save(read);
+                binConv.Save(read);
 
-                read = xmlConv.Read(read.Keys.ToArray());
-                doc1 = read.FirstOrDefault().Value as Document;
-                doc1.Cars.Add(new XmlBasedFileInfo
+                read = binConv.Read(read.Keys.ToArray());
+                doc1 = read.FirstOrDefault().Value as List<BinaryBasedFileInfo>;
+                doc1.Add(new BinaryBasedFileInfo
                 {
-                    BrandName = "BMW",
+                    Header = 222,
+                    RecordsCount = 2,
                     Date = DateTime.Now.AddHours(1),
+                    BrandNameLength = 3,
+                    BrandName = "BMW",
                     Price = 22
                 });
-                doc1.Cars.Add(new XmlBasedFileInfo
+                doc1.Add(new BinaryBasedFileInfo
                 {
-                    BrandName = "ZAZ",
+                    Header = 222,
+                    RecordsCount = 2,
                     Date = DateTime.Now.AddHours(1),
+                    BrandNameLength = 3,
+                    BrandName = "ZAZ",
                     Price = 333
                 });
-                doc1.Cars.Add(new XmlBasedFileInfo
+                doc1.Add(new BinaryBasedFileInfo
                 {
-                    BrandName = "WRANGLER",
+                    Header = 222,
+                    RecordsCount = 2,
                     Date = DateTime.Now.AddHours(1),
+                    BrandNameLength = 3,
+                    BrandName = "WRANGLER",
                     Price = 444
                 });
 
 
-                xmlConv.Save(read);
+                binConv.Save(read);
+
+                //string path = @"C:\Temp";
+
+                //List<XmlBasedFileInfo> fileContent = new List<XmlBasedFileInfo>
+                //{
+                //    new XmlBasedFileInfo
+                //    {
+                //        BrandName = "Nissan",
+                //        Date = DateTime.Now,
+                //        Price = 1
+                //    },
+                //    new XmlBasedFileInfo
+                //    {
+                //        BrandName = "Mazda",
+                //        Date = DateTime.Now.AddHours(1),
+                //        Price = 2
+                //    }
+                //};
+
+                //Document doc = new Document(fileContent);
+                //Dictionary<string, Document> files = new Dictionary<string, Document>();
+
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), doc);
+                //}
+
+                //xmlConv.Save(files);
+
+                //var read = xmlConv.Read(files.Keys.ToArray());
+
+                //var file = read.FirstOrDefault();
+                //var doc1 = file.Value as Document;
+                //doc1.Cars[1].BrandName = "SUZUKI";
+                //doc1.Cars.RemoveAt(0);
+
+                ////var toSave = new Dictionary<string, ISerializable>();
+                ////toSave.Add(file.Key, file.Value);
+                //xmlConv.Save(read);
+
+                //read = xmlConv.Read(read.Keys.ToArray());
+                //doc1 = read.FirstOrDefault().Value as Document;
+                //doc1.Cars.Add(new XmlBasedFileInfo
+                //{
+                //    BrandName = "BMW",
+                //    Date = DateTime.Now.AddHours(1),
+                //    Price = 22
+                //});
+                //doc1.Cars.Add(new XmlBasedFileInfo
+                //{
+                //    BrandName = "ZAZ",
+                //    Date = DateTime.Now.AddHours(1),
+                //    Price = 333
+                //});
+                //doc1.Cars.Add(new XmlBasedFileInfo
+                //{
+                //    BrandName = "WRANGLER",
+                //    Date = DateTime.Now.AddHours(1),
+                //    Price = 444
+                //});
+
+
+                //xmlConv.Save(read);
                 // xmlConv.Delete(files.Keys.ToArray());
 
             }
