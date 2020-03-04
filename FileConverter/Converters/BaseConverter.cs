@@ -12,6 +12,8 @@ namespace FileConverter.Converters
 {
     abstract class BaseConverter<T> where T : ISerializable
     {
+        protected ISerializer Serializer { get; set; }
+
         protected abstract void Convert();
         public abstract void Create(IDictionary<string, T> files);
 

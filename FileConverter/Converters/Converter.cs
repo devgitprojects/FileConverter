@@ -14,14 +14,12 @@ using System.Xml.Serialization;
 
 namespace FileConverter.Converters
 {
-    internal class XmlBasedConverter : BaseConverter<ISerializable>
+    internal class Converter : BaseConverter<ISerializable>
     {
-        internal XmlBasedConverter()
+        internal Converter(ISerializer serializer)
         {
-            this.Serializer = new XmlSerializer(typeof(Document));
+            this.Serializer = serializer;
         }
-
-        private XmlSerializer Serializer { get; set; }
 
         protected override void Convert()
         {
@@ -78,10 +76,10 @@ namespace FileConverter.Converters
 
             Parallel.ForEach(filesPaths, path =>
             {
-                StreamReader stream = null;
+                FileStream stream = null;
                 try
                 {
-                    stream = new StreamReader(path);
+                    stream = File.OpenRead(path);
                     ISerializable file = this.Serializer.Deserialize(stream) as ISerializable;
                     files.AddOrUpdate(path, file, (p, f) => file);
                     Logger.Instance.Info("[READ] {0}", path);
@@ -110,7 +108,40 @@ namespace FileConverter.Converters
 
         public override void Save(IDictionary<string, ISerializable> filesToSave)
         {
-            throw new NotImplementedException();
+            if (filesToSave == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            var exceptions = new ConcurrentQueue<Exception>();
+
+            Parallel.ForEach(filesToSave, file =>
+            {
+                FileStream stream = null;
+                try
+                {
+                    stream = File.Open(file.Key, FileMode.Create);
+                    this.Serializer.Serialize(stream, file.Value);
+                    Logger.Instance.Info("[SAVE] {0}", file.Key);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Error(LogMessages.ModifyFileExceptionText + " /n {1}", file.Key, ex.ToString());
+                    exceptions.Enqueue(new ModifyFileException(String.Format(LogMessages.ModifyFileExceptionText, file.Key), ex));
+                }
+                finally
+                {
+                    if (stream != null)
+                    {
+                        stream.Dispose();
+                    }
+                }
+            });
+
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
         }
     }
 }

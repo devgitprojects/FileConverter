@@ -1,19 +1,36 @@
 ﻿using FileConverter.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileConverter.Converters
 {
-    class BinaryBasedConverter //: BaseConverter<BinaryBasedFileInfo>
+    internal class BinaryBasedConverter : BaseConverter<ISerializable>
     {
-        BinaryBasedConverter()
+        internal BinaryBasedConverter(ISerializer serializer)
         {
+            this.Serializer = serializer;
         }
 
-        private BinaryFormatter Serializer { get; set; }       
+        public override void Create(IDictionary<string, ISerializable> files)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IDictionary<string, ISerializable> Read(params string[] filesPaths)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Save(IDictionary<string, ISerializable> filesToSave)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Convert()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
