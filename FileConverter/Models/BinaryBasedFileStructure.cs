@@ -1,6 +1,5 @@
 ﻿using FileConverter.Constants;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -10,7 +9,7 @@ namespace FileConverter.Models
     public class BinaryBasedFileStructure : XmlBasedFileStructure, ISerializable
     {
         public BinaryBasedFileStructure() : base() { }
-        public BinaryBasedFileStructure(LinkedList<Car> cars) : base(cars) { }
+        public BinaryBasedFileStructure(Cars cars) : base(cars) { }
         protected BinaryBasedFileStructure(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             Header = info.GetInt16("Header");

@@ -24,6 +24,7 @@ namespace FileConverter.Converters
         {
             serializationStream.ThrowArgumentNullExceptionIfNull();
             graph.ThrowArgumentNullExceptionIfNull();
+            graph.Validate();
             Serializer.Serialize(serializationStream, graph);
         }
     }

@@ -9,6 +9,7 @@
 
         public const string ValueShouldBePositive = "Value should be positive: ";
         public const string CollectionShouldContainZeroOrMoreItems = "Collection should contain zero or more items: ";
+        public const string ValidationFailed = "Item is not valid: {0}. The following errors occur: {1}";
 
     }
 }

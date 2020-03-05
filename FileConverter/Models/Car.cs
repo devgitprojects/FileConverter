@@ -26,11 +26,10 @@ namespace FileConverter.Models
         [Range(0, int.MaxValue, ErrorMessage = LogMessages.ValueShouldBePositive + "Price")]
         public int Price { get; set; }
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            this.Validate();
             info.AddValue("Date", this.Date);
-            info.AddValue("BrandNameLength", this.BrandNameLength);
+            info.AddValue("BrandNameLength", String.IsNullOrEmpty(this.BrandName) ? 0 : this.BrandName.Length);
             info.AddValue("BrandName", this.BrandName);
             info.AddValue("Price", this.Price);
         }

@@ -1,7 +1,6 @@
 ﻿using FileConverter.Constants;
 using FileConverter.Extensions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -13,24 +12,29 @@ namespace FileConverter.Models
     public class XmlBasedFileStructure : BaseFileStructure, ISerializable
     {
         public XmlBasedFileStructure() { }
-        public XmlBasedFileStructure(LinkedList<Car> fileContent)
+        public XmlBasedFileStructure(Cars cars)
         {
-            fileContent.ThrowArgumentNullExceptionIfNull();
-            Cars = fileContent;
+            cars.ThrowArgumentNullExceptionIfNull();
+            Cars = cars;
         }
         protected XmlBasedFileStructure(SerializationInfo info, StreamingContext context)
         {
-            Cars = (LinkedList<Car>)info.GetValue("Cars", typeof(LinkedList<Car>));
+            Cars = (Cars)info.GetValue("Cars", typeof(Cars));
         }
 
         [XmlElement("Car")]
-        [Range(0, int.MaxValue, ErrorMessage = LogMessages.CollectionShouldContainZeroOrMoreItems + "Cars")]
-        public LinkedList<Car> Cars { get; set; }         
+        [Required(ErrorMessage = LogMessages.CollectionShouldContainZeroOrMoreItems + "Cars")]
+        public Cars Cars { get; set; }
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            this.Validate();
-            info.AddValue("Cars", this.Cars, typeof(LinkedList<Car>));
+            info.AddValue("Cars", this.Cars, typeof(Cars));
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+            this.Cars.Validate();
         }
     }
 }

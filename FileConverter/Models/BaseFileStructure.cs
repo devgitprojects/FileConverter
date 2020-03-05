@@ -1,22 +1,27 @@
-﻿using FileConverter.Extensions;
+﻿using FileConverter.Constants;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace FileConverter.Models
 {
-    public abstract class BaseFileStructure : ISerializable
+    [Serializable]
+    public abstract class BaseFileStructure
     {
-        public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
-        protected virtual void Validate()
+        public virtual void Validate()
         {
-            var errors = new List<ValidationResult>();
-            var context = new ValidationContext(this);
-            if (!Validator.TryValidateObject(context.ObjectInstance, context, errors, true))
+            if (!Validate(out List<ValidationResult> errors))
             {
-                errors.Select(x => new ValidationException(x.ErrorMessage)).ToList().ThrowAggregateExceptionIfInnerExceptionPresent();
+                throw new ValidationException(String.Format(LogMessages.ValidationFailed, String.Empty, String.Join(", ", errors.Select(er => er.ErrorMessage).ToArray())));
             }
+        }
+
+        public virtual bool Validate(out List<ValidationResult> errors)
+        {
+            errors = new List<ValidationResult>();
+            var context = new ValidationContext(this);            
+            return Validator.TryValidateObject(context.ObjectInstance, context, errors, true); ;
         }
     }
 }
