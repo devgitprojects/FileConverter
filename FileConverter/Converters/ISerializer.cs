@@ -1,16 +1,15 @@
-﻿using System.IO;
+﻿using FileConverter.Models;
+using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
 
 namespace FileConverter.Converters
 {
     /// <summary>
     /// Represents serialization engine
     /// </summary>
-    public interface ISerializer
+    public interface ISerializer<T> where T : BaseFileStructure
     {   
-        object Deserialize(Stream serializationStream);       
-        void Serialize(Stream serializationStream, object graph);
+        T Deserialize(Stream serializationStream);       
+        void Serialize(Stream serializationStream, T graph);
     }
 }

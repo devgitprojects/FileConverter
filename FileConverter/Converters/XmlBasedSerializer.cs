@@ -1,10 +1,11 @@
-﻿using System.IO;
-using System.Runtime.Serialization;
+﻿using FileConverter.Extensions;
+using FileConverter.Models;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace FileConverter.Converters
 {
-    internal class XmlBasedSerializer<T> : ISerializer where T : ISerializable
+    internal class XmlBasedSerializer<T> : ISerializer<T> where T : BaseFileStructure
     {
         internal XmlBasedSerializer()
         {
@@ -13,13 +14,16 @@ namespace FileConverter.Converters
 
         private XmlSerializer Serializer { get; set; }
 
-        public object Deserialize(Stream serializationStream)
+        public T Deserialize(Stream serializationStream)
         {
-            return Serializer.Deserialize(serializationStream);
+            serializationStream.ThrowArgumentNullExceptionIfNull();
+            return (T)Serializer.Deserialize(serializationStream);
         }
 
-        public void Serialize(Stream serializationStream, object graph)
+        public void Serialize(Stream serializationStream, T graph)
         {
+            serializationStream.ThrowArgumentNullExceptionIfNull();
+            graph.ThrowArgumentNullExceptionIfNull();
             Serializer.Serialize(serializationStream, graph);
         }
     }

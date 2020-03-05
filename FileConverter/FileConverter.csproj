@@ -33,6 +33,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.4.7.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,20 +51,23 @@
     <Compile Include="Converters\BinaryBasedSerializer.cs" />
     <Compile Include="Converters\ISerializer.cs" />
     <Compile Include="Converters\SerializerSelector.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Converters\XmlBasedSerializer.cs" />
     <Compile Include="Exceptions\CreateFileException.cs" />
     <Compile Include="Exceptions\FileException.cs" />
     <Compile Include="Exceptions\ReadFileException.cs" />
     <Compile Include="Exceptions\RemoveFileException.cs" />
     <Compile Include="Exceptions\ModifyFileException.cs" />
-    <Compile Include="Models\BaseFileInfo.cs" />
-    <Compile Include="Models\BinaryBasedFileInfo.cs" />
-    <Compile Include="Models\XmlBasedFileInfo.cs" />
+    <Compile Include="Models\BaseFileStructure.cs" />
+    <Compile Include="Models\XmlBasedFileStructure.cs" />
+    <Compile Include="Models\BinaryBasedFileStructure.cs" />
+    <Compile Include="Models\Car.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Logger\Logger.csproj">

@@ -8,6 +8,6 @@ namespace FileConverter.Converters
 {
     internal class SerializerSelector
     {
-        public ISerializer Serilizer { get; set; }
+        //public ISerializer Serilizer { get; set; }
     }
 }

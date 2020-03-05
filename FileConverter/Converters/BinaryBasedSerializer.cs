@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using FileConverter.Extensions;
+using FileConverter.Models;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace FileConverter.Converters
 {
-    internal class BinaryBasedSerializer : ISerializer
+    internal class BinaryBasedSerializer<T> : ISerializer<T> where T : BaseFileStructure
     {
         internal BinaryBasedSerializer()
         {
@@ -12,13 +14,16 @@ namespace FileConverter.Converters
 
         private BinaryFormatter Serializer { get; set; }
 
-        public object Deserialize(Stream serializationStream)
+        public T Deserialize(Stream serializationStream)
         {
-            return Serializer.Deserialize(serializationStream);
+            serializationStream.ThrowArgumentNullExceptionIfNull();
+            return (T)Serializer.Deserialize(serializationStream);
         }
 
-        public void Serialize(Stream serializationStream, object graph)
+        public void Serialize(Stream serializationStream, T graph)
         {
+            serializationStream.ThrowArgumentNullExceptionIfNull();
+            graph.ThrowArgumentNullExceptionIfNull();
             Serializer.Serialize(serializationStream, graph);
         }
     }
