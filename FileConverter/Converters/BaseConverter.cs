@@ -20,7 +20,7 @@ namespace FileConverter.Converters
 
         protected ISerializer<T> Serializer { get; set; }
 
-        public virtual void Convert()
+        public virtual C Convert<C>(IDictionary<string, T> filesToConvert)
         {
             throw new NotImplementedException();
         }

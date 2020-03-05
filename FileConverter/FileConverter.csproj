@@ -59,11 +59,12 @@
     <Compile Include="Exceptions\RemoveFileException.cs" />
     <Compile Include="Exceptions\ModifyFileException.cs" />
     <Compile Include="Models\BaseFileStructure.cs" />
-    <Compile Include="Models\Cars.cs" />
+    <Compile Include="Models\XmlCar.cs" />
+    <Compile Include="Models\CarsCollection.cs" />
     <Compile Include="Models\SerializableKeyedCollection.cs" />
     <Compile Include="Models\XmlBasedFileStructure.cs" />
     <Compile Include="Models\BinaryBasedFileStructure.cs" />
-    <Compile Include="Models\Car.cs" />
+    <Compile Include="Models\BinaryCar.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

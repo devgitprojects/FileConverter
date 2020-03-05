@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace FileConverter.Models
 {
@@ -30,6 +29,11 @@ namespace FileConverter.Models
             }           
 
             exceptions.ThrowAggregateExceptionIfInnerExceptionPresent();
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            base.RemoveItem(index);
         }
     }
 }
