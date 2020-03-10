@@ -49,6 +49,7 @@
     <Compile Include="Constants\LogMessages.cs" />
     <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Converters\BinaryBasedSerializer.cs" />
+    <Compile Include="Converters\IConvertible.cs" />
     <Compile Include="Converters\ISerializer.cs" />
     <Compile Include="Converters\SerializerSelector.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />

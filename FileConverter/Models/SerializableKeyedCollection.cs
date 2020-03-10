@@ -1,4 +1,5 @@
 ﻿using FileConverter.Constants;
+using FileConverter.Converters;
 using FileConverter.Extensions;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,30 @@ using System.Linq;
 namespace FileConverter.Models
 {
     [Serializable]
-    public abstract class SerializableKeyedCollection<K, V> : KeyedCollection<K, V> where V : BaseFileStructure
+    public abstract class SerializableKeyedCollection<TKey, TValue> : KeyedCollection<TKey, TValue> where TValue : BaseFileStructure
     {
         public SerializableKeyedCollection() : base() { }
-        public SerializableKeyedCollection(IEqualityComparer<K> comparer) : base(comparer) { }
-        public SerializableKeyedCollection(IEqualityComparer<K> comparer, int dictionaryCreationThreshold) : base(comparer, dictionaryCreationThreshold) { }
+        public SerializableKeyedCollection(IEnumerable<TValue> enumerable) : base()
+        {
+            AddRange(enumerable);
+        }
+
+        public SerializableKeyedCollection(IEqualityComparer<TKey> comparer) : base(comparer) { }
+        public SerializableKeyedCollection(IEqualityComparer<TKey> comparer, int dictionaryCreationThreshold) : base(comparer, dictionaryCreationThreshold) { }
+
+        public void AddRange(IEnumerable<TValue> enumerable)
+        {
+            foreach (var item in enumerable)
+            {
+                this.Add(item);
+            }
+        }
+
+        public virtual IEnumerable<TConvertTo> Convert<TConvertTo>(Mapper<TValue, TConvertTo> mapper) 
+            where TConvertTo : IInitializable<TValue>, new()
+        {
+            return this.Convert(x => mapper.Convert(x));
+        }
 
         public virtual void Validate()
         {

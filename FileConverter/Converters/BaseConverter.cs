@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FileConverter.Converters
@@ -18,11 +19,43 @@ namespace FileConverter.Converters
             this.Serializer = serializer;
         }
 
-        protected ISerializer<T> Serializer { get; set; }
+        public ISerializer<T> Serializer { get; protected set; }
 
-        public virtual C Convert<C>(IDictionary<string, T> filesToConvert)
+        public virtual IDictionary<string, C> Convert<C>(IDictionary<string, T> filesToConvert, ISerializer<C> serializerC, ISerializer<T> serializerT) where C : BaseFileStructure
         {
-            throw new NotImplementedException();
+            //Stream stream = new MemoryStream();
+            //using (stream)
+            //{
+            //    Serializer.Serialize(stream, source);
+            //    stream.Seek(0, SeekOrigin.Begin);
+            //    //return (T)formatter.Deserialize(stream);
+            //}
+            ConcurrentDictionary<string, C> converted = new ConcurrentDictionary<string, C>();
+
+            Parallel.ForEach(filesToConvert, file =>
+            {
+                Stream stream = null;
+                try
+                {
+                    stream = new MemoryStream();
+                    serializerT.Serialize(stream, file.Value);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    var convertedFile = serializerC.Deserialize(stream);
+                    converted.AddOrUpdate(file.Key, convertedFile, (p, f) => convertedFile);
+                    Logger.Instance.Info("[CONVERT] {0}", file.Key);
+                }
+                catch (Exception ex)
+                {
+                    //Logger.Instance.Error(LogMessages.ReadFileExceptionText + " /n {1}", path, ex.ToString());
+                    //exceptions.Enqueue(new ReadFileException(String.Format(LogMessages.ReadFileExceptionText, path), ex));
+                }
+                finally
+                {
+                    stream.DisposeIfNotNull();
+                }
+            });
+
+            return null;
         }
 
         public void Delete(params string[] filesToDelete)

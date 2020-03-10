@@ -19,6 +19,7 @@ namespace FileConverter
             {
 
                 BaseConverter<XmlBasedFileStructure> xmlConv = new BaseConverter<XmlBasedFileStructure>(new XmlBasedSerializer<XmlBasedFileStructure>());
+                BaseConverter<BinaryBasedFileStructure> binConv = new BaseConverter<BinaryBasedFileStructure>(new BinaryBasedSerializer<BinaryBasedFileStructure>());
 
                 string path = @"C:\Temp";
 
@@ -28,7 +29,7 @@ namespace FileConverter
                     {
                         Date = DateTime.Now,
                         BrandName = "Nissan",
-                        Price = -1,
+                        Price = 1,
 
                     });
 
@@ -47,9 +48,23 @@ namespace FileConverter
                     files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), file);
                 }
 
+                Mapper<XmlBasedFileStructure, BinaryBasedFileStructure> mapperXmlToBi = new Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>();
+                BinaryBasedFileStructure binary = mapperXmlToBi.Convert(file);
+
+                Mapper<BinaryBasedFileStructure, TestBaseFileStructure> mapperBinToSome = new Mapper<BinaryBasedFileStructure, TestBaseFileStructure>();
+                Mapper<BinaryBasedFileStructure, XmlBasedFileStructure> mapperBinToXml = new Mapper<BinaryBasedFileStructure, XmlBasedFileStructure>();
+
+                TestBaseFileStructure xml1 = mapperBinToSome.Convert(binary);
+                IConvertible<BinaryBasedFileStructure> cb = binary;
+                XmlBasedFileStructure xml = cb.Convert(mapperBinToXml);
+                TestBaseFileStructure test = cb.Convert(mapperBinToSome);
+                //IConvertible<TestBaseFileStructure> cb = binary;
+                //cb.Convert(mapperBinToXml);
                 xmlConv.Save(files);
 
                 var read = xmlConv.Read(files.Keys.ToArray());
+
+                xmlConv.Convert<BinaryBasedFileStructure>(read, binConv.Serializer, new BinaryBasedSerializer<XmlBasedFileStructure>());
 
                 var fileRead = read.FirstOrDefault();
                 var doc1 = fileRead.Value;
@@ -84,7 +99,6 @@ namespace FileConverter
                 xmlConv.Save(read);
                 read = xmlConv.Read(read.Keys.ToArray());
 
-                BaseConverter<BinaryBasedFileStructure> binConv = new BaseConverter<BinaryBasedFileStructure>(new BinaryBasedSerializer<BinaryBasedFileStructure>());
 
                 //string path = @"C:\Temp";
 

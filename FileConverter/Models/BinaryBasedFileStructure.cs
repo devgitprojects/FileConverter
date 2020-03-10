@@ -1,13 +1,15 @@
 ﻿using FileConverter.Constants;
+using FileConverter.Converters;
 using FileConverter.Extensions;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace FileConverter.Models
 {
     [Serializable]
-    public class BinaryBasedFileStructure : BaseFileStructure, ISerializable
+    public class BinaryBasedFileStructure : BaseFileStructure, ISerializable, IInitializable<XmlBasedFileStructure>, IConvertible<BinaryBasedFileStructure>
     {
         public BinaryBasedFileStructure() : base() { }
         public BinaryBasedFileStructure(CarsCollection<BinaryCar> cars)
@@ -24,7 +26,7 @@ namespace FileConverter.Models
 
         public short Header { get; set; }
         [Range(0, int.MaxValue, ErrorMessage = LogMessages.ValueShouldBePositive + "RecordsCount")]
-        public uint RecordsCount { get; set; }
+        public uint RecordsCount { get; private set; }
         [Required(ErrorMessage = LogMessages.CollectionShouldContainZeroOrMoreItems + "Cars")]
         public CarsCollection<BinaryCar> Cars { get; set; }
 
@@ -39,6 +41,19 @@ namespace FileConverter.Models
         {
             base.Validate();
             this.Cars.Validate();
+        }
+
+        TTo IConvertible<BinaryBasedFileStructure>.Convert<TTo>(Mapper<BinaryBasedFileStructure, TTo> mapper)
+        {
+           return mapper.Convert(this);
+        }
+
+        void IInitializable<XmlBasedFileStructure>.Initialize(XmlBasedFileStructure from)
+        {
+            from.ThrowArgumentNullExceptionIfNull();
+            Cars = new CarsCollection<BinaryCar>(from.Cars.Convert(new Mapper<XmlCar, BinaryCar>()));
+            Header = 0x2526;
+            RecordsCount = (uint)Cars.Count;
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FileConverter.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FileConverter.Extensions
 {
@@ -27,6 +29,11 @@ namespace FileConverter.Extensions
             {
                 throw new AggregateException(innerExceptions);
             }
+        }
+
+        public static IEnumerable<TTo> Convert<TFrom, TTo>(this IEnumerable<TFrom> enumerable, Func<TFrom, TTo> constructionFunc)
+        {
+            return enumerable.Select(constructionFunc);
         }
     }
 }
