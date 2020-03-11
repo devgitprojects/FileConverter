@@ -9,6 +9,10 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using XmlBinFileConverter.Converters;
+using System.ComponentModel.DataAnnotations;
+using CommonFileConverter.Exceptions;
+using XmlBinFileConverter.Constants;
 
 namespace XmlBinFileConverter
 {
@@ -18,161 +22,114 @@ namespace XmlBinFileConverter
         {
             try
             {
+                string path = @"C:\Temp";
 
-               // BaseConverter<XmlBasedFileStructure> xmlConv = new BaseConverter<XmlBasedFileStructure>(new XmlBasedSerializer<XmlBasedFileStructure>());
-               // BaseConverter<BinaryBasedFileStructure> binConv = new BaseConverter<BinaryBasedFileStructure>(new BinaryBasedSerializer<BinaryBasedFileStructure>());
+                BinaryFileConverter binConv = new BinaryFileConverter();
+                XmlFileConverter xmlConv = new XmlFileConverter();
 
-                //string path = @"C:\Temp";
+                CarsCollection<XmlCar> cars = new CarsCollection<XmlCar>();
+                cars.Add(new XmlCar
+                {
+                    Date = DateTime.Now,
+                    BrandName = "Alpha Romeo Brera",
+                    Price = 60000,
+                });
+                cars.Add(new XmlCar
+                {
+                    Date = DateTime.Now.AddHours(1),
+                    BrandName = "Mazda",
+                    Price = 25000
+                });
 
-                //CarsCollection<XmlCar> cars = new CarsCollection<XmlCar>();
-                //cars.Add(
-                //    new XmlCar
-                //    {
-                //        Date = DateTime.Now,
-                //        BrandName = "Nissan",
-                //        Price = 1,
+                XmlBasedFileStructure file = new XmlBasedFileStructure(cars);
+                Dictionary<string, XmlBasedFileStructure> files = new Dictionary<string, XmlBasedFileStructure>();
 
-                //    });
+                for (int i = 0; i < 10; i++)
+                {
+                    files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), file);
+                }
 
-                //cars.Add(new XmlCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "Mazda",
-                //    Price = 2
-                //});
+                xmlConv.Save(files);
+                IDictionary<string, XmlBasedFileStructure> xmlFiles = xmlConv.Read(files.Keys.ToArray());
+                XmlBasedFileStructure file_0 = xmlFiles[Path.Combine(path, String.Format("{0}.cxml", 0))];
+                file_0.Cars["Mazda"].Price = 22000;
+                file_0.Cars["Mazda"].Date = DateTime.Now.AddMonths(1);
+                file_0.Cars.Remove("Alpha Romeo Brera");
 
-                //XmlBasedFileStructure file = new XmlBasedFileStructure(cars);
-                //Dictionary<string, XmlBasedFileStructure> files = new Dictionary<string, XmlBasedFileStructure>();
+                xmlConv.Save(xmlFiles);
 
-                //for (int i = 0; i < 1; i++)
-                //{
-                //    files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), file);
-                //}
+                xmlFiles = xmlConv.Read(files.Keys.ToArray());
+                XmlBasedFileStructure file_1 = xmlFiles[Path.Combine(path, String.Format("{0}.cxml", 1))];
+                file_1.Cars.Add(new XmlCar
+                {
+                    Date = DateTime.Now.AddHours(1),
+                    BrandName = "BMW",
+                    Price = 40000
+                });
+                file_1.Cars.Add(new XmlCar
+                {
+                    Date = DateTime.Now.AddHours(2),
+                    BrandName = "ZAZ",
+                    Price = 300
+                });
+                file_1.Cars.Add(new XmlCar
+                {
+                    Date = DateTime.Now.AddHours(-3),
+                    BrandName = "WRANGLER",
+                    Price = 60000
+                });
 
-                //Mapper<XmlBasedFileStructure, BinaryBasedFileStructure> mapperXmlToBi = new Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>();
-                //BinaryBasedFileStructure binary = mapperXmlToBi.Convert(file);
+                xmlConv.Save(xmlFiles);
 
-                //Mapper<BinaryBasedFileStructure, TestBaseFileStructure> mapperBinToSome = new Mapper<BinaryBasedFileStructure, TestBaseFileStructure>();
-                //Mapper<BinaryBasedFileStructure, XmlBasedFileStructure> mapperBinToXml = new Mapper<BinaryBasedFileStructure, XmlBasedFileStructure>();
+                xmlFiles = xmlConv.Read(files.Keys.ToArray());
+                IDictionary<string, BinaryBasedFileStructure> binaryFiles = xmlConv.Convert<BinaryBasedFileStructure>(xmlFiles);
 
-                //TestBaseFileStructure xml1 = mapperBinToSome.Convert(binary);
-                //IConvertible<BinaryBasedFileStructure> cb = binary;
-                //XmlBasedFileStructure xml = cb.Convert(mapperBinToXml);
-                //TestBaseFileStructure test = cb.Convert(mapperBinToSome);
-                //xmlConv.Save(files);
+                try
+                {
+                    binConv.Save(binaryFiles);
+                }
+                catch (AggregateException ex)
+                {
+                    ex.Handle((inner) =>
+                    {
+                        if (inner is ModifyFileException) // each file saving operation throws exception
+                        {
+                            AggregateException agEx = inner.InnerException as AggregateException;
+                            if (agEx != null)
+                            {
+                                agEx.Handle((innerException) => /// several validation errors
+                                {
+                                    if (innerException is ValidationException && innerException.Message.Contains(XmlBinMessages.StringExceedsMaxLenght))
+                                    {
+                                        return true;
+                                    }
+                                    return false;
+                                });
+                                return true;
+                            }
+                        }
+                        return false; 
+                    });
 
-                //var read = xmlConv.Read(files.Keys.ToArray());
+                    foreach (var pathFile in binaryFiles)
+                    {
+                        foreach (var car in pathFile.Value.Cars)
+                        {
+                            car.BrandName = car.BrandName.Substring(0, 2);
+                        }
+                    }
+                }
 
-                //xmlConv.Convert<BinaryBasedFileStructure>(read, binConv.Serializer, new BinaryBasedSerializer<XmlBasedFileStructure>());
+                binConv.Save(binaryFiles);
+                xmlConv.Delete(files.Keys.ToArray());
 
-                //var fileRead = read.FirstOrDefault();
-                //var doc1 = fileRead.Value;
-                //doc1.Cars["Mazda"].BrandName = "SUZUKI";
-                //doc1.Cars.Remove("Nissan");
-
-                //xmlConv.Save(read);
-
-                //read = xmlConv.Read(read.Keys.ToArray());
-
-                //doc1 = read.FirstOrDefault().Value;
-                //doc1.Cars.Add(new XmlCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "BMW",
-                //    Price = 22
-                //});
-                //doc1.Cars.Add(new XmlCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "ZAZ",
-                //    Price = 333
-                //});
-                //doc1.Cars.Add(new XmlCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "WRANGLER",
-                //    Price = 444
-                //});
-
-
-                //xmlConv.Save(read);
-                //read = xmlConv.Read(read.Keys.ToArray());
-
-
-                //Dictionary<string, BinaryBasedFileStructure> filesBin = new Dictionary<string, BinaryBasedFileStructure>();
-
-                //foreach (var item in read)
-                //{
-                //    IConvertible<XmlBasedFileStructure> xc = item.Value;
-                //    filesBin.Add(item.Key.Replace(".cxml", ".cbin"), xc.Convert<BinaryBasedFileStructure>(mapperXmlToBi));
-                //}
-
-
-                //string path = @"C:\Temp";
-
-                //CarsCollection<BinaryCar> cars = new CarsCollection<BinaryCar>();
-                //cars.Add(
-                //    new BinaryCar
-                //    {
-                //        Date = DateTime.Now,
-                //        BrandName = "Ni",
-                //        Price = 1,
-
-                //    });
-
-                //cars.Add(new BinaryCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "Ma",
-                //    Price = 2
-                //});
-
-                //BinaryBasedFileStructure file = new BinaryBasedFileStructure(cars);
-                //Dictionary<string, BinaryBasedFileStructure> files = new Dictionary<string, BinaryBasedFileStructure>();
-
-
-                //for (int i = 0; i < 1; i++)
-                //{
-                //    files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), file);
-                //}
-
-                //binConv.Save(files);
-
-                //var read = binConv.Read(files.Keys.ToArray());
-
-                //var fileRead = read.FirstOrDefault();
-                //var doc1 = fileRead.Value;
-                //doc1.Cars["Mazda"].BrandName = "SUZUKI";
-                //doc1.Cars.Remove("Nissan");
-
-                //binConv.Save(read);
-
-                //read = binConv.Read(read.Keys.ToArray());
-
-                //doc1 = read.FirstOrDefault().Value;
-                //doc1.Cars.Add(new BinaryCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "BMW",
-                //    Price = 22
-                //});
-                //doc1.Cars.Add(new BinaryCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "ZAZ",
-                //    Price = 333
-                //});
-                //doc1.Cars.Add(new BinaryCar
-                //{
-                //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "WRANGLER",
-                //    Price = 444
-                //});
-
-
-                //binConv.Save(read);
-                //read = binConv.Read(read.Keys.ToArray());
-
+                binaryFiles = binConv.Read(binaryFiles.Keys.ToArray());
+                BinaryBasedFileStructure file_2 = binaryFiles[Path.Combine(path, String.Format("{0}.cbin", 2))];
+                file_2.Cars[0].Price = 21000;
+                file_2.Cars.RemoveAt(1);
+                binConv.Save(binaryFiles);
+                binaryFiles = binConv.Read(binaryFiles.Keys.ToArray());
+                binConv.Delete(files.Keys.ToArray());
 
             }
             catch (Exception ex)

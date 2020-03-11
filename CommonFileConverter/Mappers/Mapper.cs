@@ -18,7 +18,7 @@ namespace CommonFileConverter.Mappers
         public Mapper() { }
         public Mapper(string convertedfileExtension)
         {
-            if (!Path.HasExtension(convertTofileExtension))
+            if (!Path.HasExtension(convertedfileExtension))
             {
                 throw new ArgumentException(String.Format(LogMessages.FileExtensionIsNotValid, convertedfileExtension));
             }

@@ -11,7 +11,7 @@ namespace XmlBinFileConverter.Converters
         public XmlFileConverter() : base(new XmlBasedSerializer<XmlBasedFileStructure>(), new MappersHolder())
         {
             Mappers.AddOrUpdate<Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>, XmlBasedFileStructure, BinaryBasedFileStructure>(
-                new Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>(".cxml"));
+                new Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>(".cbin"));
         }
 
         public XmlFileConverter(ISerializer<XmlBasedFileStructure> serializer, MappersHolder mappersHolder) : base(serializer, mappersHolder) { }
