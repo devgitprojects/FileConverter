@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace FileConverter.Exceptions
+namespace CommonFileConverter.Exceptions
 {
     /// <summary>
-    /// Represents exception occured during file creating
+    /// Represents exception occurred during file creating
     /// </summary>
     public class CreateFileException : FileException
     {

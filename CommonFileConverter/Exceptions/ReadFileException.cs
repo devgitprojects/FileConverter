@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace FileConverter.Exceptions
+namespace CommonFileConverter.Exceptions
 {
     /// <summary>
-    /// Represents exception occured during file reading
+    /// Represents exception occurred during file reading
     /// </summary>
     public class ReadFileException : FileException
     {

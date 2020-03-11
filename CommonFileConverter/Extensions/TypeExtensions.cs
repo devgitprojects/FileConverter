@@ -1,9 +1,8 @@
-﻿using FileConverter.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FileConverter.Extensions
+namespace CommonFileConverter.Extensions
 {
     public static class TypeExtensions
     {

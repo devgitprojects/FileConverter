@@ -6,9 +6,7 @@ namespace Logging
     {
         private static readonly Lazy<FileLogger> logger = new Lazy<FileLogger>(() => new FileLogger("FileConverter"));
 
-        private Logger()
-        {
-        }
+        private Logger() { }
 
         public static ILogger Instance
         {

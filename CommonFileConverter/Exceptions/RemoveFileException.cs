@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace FileConverter.Exceptions
+namespace CommonFileConverter.Exceptions
 {
     /// <summary>
-    /// Represents exception occured during file removing
+    /// Represents exception occurred during file removing
     /// </summary>
     public class RemoveFileException : FileException
     {

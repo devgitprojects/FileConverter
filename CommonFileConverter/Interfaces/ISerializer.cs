@@ -1,8 +1,7 @@
-﻿using FileConverter.Models;
+﻿using CommonFileConverter.Models;
 using System.IO;
-using System.Runtime.Serialization;
 
-namespace FileConverter.Converters
+namespace CommonFileConverter.Interfaces
 {
     /// <summary>
     /// Represents serialization engine

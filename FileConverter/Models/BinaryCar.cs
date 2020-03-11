@@ -1,15 +1,14 @@
-﻿using FileConverter.Constants;
-using FileConverter.Converters;
-using FileConverter.Extensions;
+﻿using CommonFileConverter.Constants;
+using CommonFileConverter.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Runtime.Serialization;
 
-namespace FileConverter.Models
+namespace XmlBinFileConverter.Models
 {
     [Serializable]
-    public class BinaryCar : XmlCar, ISerializable, IConvertible<BinaryCar>, IInitializable<XmlCar>
+    public class BinaryCar : XmlCar, ISerializable, IInitializable<XmlCar>
     {
         const string binaryDateFormat = "ddMMyyyy";
 
@@ -36,28 +35,11 @@ namespace FileConverter.Models
             info.AddValue("Price", Price);
         }
 
-        TTo IConvertible<BinaryCar>.Convert<TTo>(Mapper<BinaryCar, TTo> mapper)
-        {
-            throw new NotImplementedException();
-        }
-
         void IInitializable<XmlCar>.Initialize(XmlCar from)
         {
             this.BrandName = from.BrandName;
             this.Date = from.Date;
             this.Price = from.Price;
         }
-
-
-
-        //XmlCar IConvertable<XmlCar>.Convert()
-        //{
-        //    return new XmlCar
-        //    {
-        //        BrandName = BrandName,
-        //        Date = Date,
-        //        Price = Price
-        //    };
-        //}
     }
 }

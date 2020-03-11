@@ -1,5 +1,6 @@
-﻿using FileConverter.Converters;
-using FileConverter.Models;
+﻿using CommonFileConverter.Converters;
+using CommonFileConverter.Serializers;
+using XmlBinFileConverter.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace FileConverter
+namespace XmlBinFileConverter
 {
     class Program
     {
@@ -18,86 +19,93 @@ namespace FileConverter
             try
             {
 
-                BaseConverter<XmlBasedFileStructure> xmlConv = new BaseConverter<XmlBasedFileStructure>(new XmlBasedSerializer<XmlBasedFileStructure>());
-                BaseConverter<BinaryBasedFileStructure> binConv = new BaseConverter<BinaryBasedFileStructure>(new BinaryBasedSerializer<BinaryBasedFileStructure>());
+               // BaseConverter<XmlBasedFileStructure> xmlConv = new BaseConverter<XmlBasedFileStructure>(new XmlBasedSerializer<XmlBasedFileStructure>());
+               // BaseConverter<BinaryBasedFileStructure> binConv = new BaseConverter<BinaryBasedFileStructure>(new BinaryBasedSerializer<BinaryBasedFileStructure>());
 
-                string path = @"C:\Temp";
+                //string path = @"C:\Temp";
 
-                CarsCollection<XmlCar> cars = new CarsCollection<XmlCar>();
-                cars.Add(
-                    new XmlCar
-                    {
-                        Date = DateTime.Now,
-                        BrandName = "Nissan",
-                        Price = 1,
+                //CarsCollection<XmlCar> cars = new CarsCollection<XmlCar>();
+                //cars.Add(
+                //    new XmlCar
+                //    {
+                //        Date = DateTime.Now,
+                //        BrandName = "Nissan",
+                //        Price = 1,
 
-                    });
+                //    });
 
-                cars.Add(new XmlCar
-                {
-                    Date = DateTime.Now.AddHours(1),
-                    BrandName = "Mazda",
-                    Price = 2
-                });
+                //cars.Add(new XmlCar
+                //{
+                //    Date = DateTime.Now.AddHours(1),
+                //    BrandName = "Mazda",
+                //    Price = 2
+                //});
 
-                XmlBasedFileStructure file = new XmlBasedFileStructure(cars);
-                Dictionary<string, XmlBasedFileStructure> files = new Dictionary<string, XmlBasedFileStructure>();
+                //XmlBasedFileStructure file = new XmlBasedFileStructure(cars);
+                //Dictionary<string, XmlBasedFileStructure> files = new Dictionary<string, XmlBasedFileStructure>();
 
-                for (int i = 0; i < 1; i++)
-                {
-                    files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), file);
-                }
+                //for (int i = 0; i < 1; i++)
+                //{
+                //    files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), file);
+                //}
 
-                Mapper<XmlBasedFileStructure, BinaryBasedFileStructure> mapperXmlToBi = new Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>();
-                BinaryBasedFileStructure binary = mapperXmlToBi.Convert(file);
+                //Mapper<XmlBasedFileStructure, BinaryBasedFileStructure> mapperXmlToBi = new Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>();
+                //BinaryBasedFileStructure binary = mapperXmlToBi.Convert(file);
 
-                Mapper<BinaryBasedFileStructure, TestBaseFileStructure> mapperBinToSome = new Mapper<BinaryBasedFileStructure, TestBaseFileStructure>();
-                Mapper<BinaryBasedFileStructure, XmlBasedFileStructure> mapperBinToXml = new Mapper<BinaryBasedFileStructure, XmlBasedFileStructure>();
+                //Mapper<BinaryBasedFileStructure, TestBaseFileStructure> mapperBinToSome = new Mapper<BinaryBasedFileStructure, TestBaseFileStructure>();
+                //Mapper<BinaryBasedFileStructure, XmlBasedFileStructure> mapperBinToXml = new Mapper<BinaryBasedFileStructure, XmlBasedFileStructure>();
 
-                TestBaseFileStructure xml1 = mapperBinToSome.Convert(binary);
-                IConvertible<BinaryBasedFileStructure> cb = binary;
-                XmlBasedFileStructure xml = cb.Convert(mapperBinToXml);
-                TestBaseFileStructure test = cb.Convert(mapperBinToSome);
-                //IConvertible<TestBaseFileStructure> cb = binary;
-                //cb.Convert(mapperBinToXml);
-                xmlConv.Save(files);
+                //TestBaseFileStructure xml1 = mapperBinToSome.Convert(binary);
+                //IConvertible<BinaryBasedFileStructure> cb = binary;
+                //XmlBasedFileStructure xml = cb.Convert(mapperBinToXml);
+                //TestBaseFileStructure test = cb.Convert(mapperBinToSome);
+                //xmlConv.Save(files);
 
-                var read = xmlConv.Read(files.Keys.ToArray());
+                //var read = xmlConv.Read(files.Keys.ToArray());
 
-                xmlConv.Convert<BinaryBasedFileStructure>(read, binConv.Serializer, new BinaryBasedSerializer<XmlBasedFileStructure>());
+                //xmlConv.Convert<BinaryBasedFileStructure>(read, binConv.Serializer, new BinaryBasedSerializer<XmlBasedFileStructure>());
 
-                var fileRead = read.FirstOrDefault();
-                var doc1 = fileRead.Value;
-                doc1.Cars["Mazda"].BrandName = "SUZUKI";
-                doc1.Cars.Remove("Nissan");
+                //var fileRead = read.FirstOrDefault();
+                //var doc1 = fileRead.Value;
+                //doc1.Cars["Mazda"].BrandName = "SUZUKI";
+                //doc1.Cars.Remove("Nissan");
 
-                xmlConv.Save(read);
+                //xmlConv.Save(read);
 
-                read = xmlConv.Read(read.Keys.ToArray());
+                //read = xmlConv.Read(read.Keys.ToArray());
 
-                doc1 = read.FirstOrDefault().Value;
-                doc1.Cars.Add(new XmlCar
-                {
-                    Date = DateTime.Now.AddHours(1),
-                    BrandName = "BMW",
-                    Price = 22
-                });
-                doc1.Cars.Add(new XmlCar
-                {
-                    Date = DateTime.Now.AddHours(1),
-                    BrandName = "ZAZ",
-                    Price = 333
-                });
-                doc1.Cars.Add(new XmlCar
-                {
-                    Date = DateTime.Now.AddHours(1),
-                    BrandName = "WRANGLER",
-                    Price = 444
-                });
+                //doc1 = read.FirstOrDefault().Value;
+                //doc1.Cars.Add(new XmlCar
+                //{
+                //    Date = DateTime.Now.AddHours(1),
+                //    BrandName = "BMW",
+                //    Price = 22
+                //});
+                //doc1.Cars.Add(new XmlCar
+                //{
+                //    Date = DateTime.Now.AddHours(1),
+                //    BrandName = "ZAZ",
+                //    Price = 333
+                //});
+                //doc1.Cars.Add(new XmlCar
+                //{
+                //    Date = DateTime.Now.AddHours(1),
+                //    BrandName = "WRANGLER",
+                //    Price = 444
+                //});
 
 
-                xmlConv.Save(read);
-                read = xmlConv.Read(read.Keys.ToArray());
+                //xmlConv.Save(read);
+                //read = xmlConv.Read(read.Keys.ToArray());
+
+
+                //Dictionary<string, BinaryBasedFileStructure> filesBin = new Dictionary<string, BinaryBasedFileStructure>();
+
+                //foreach (var item in read)
+                //{
+                //    IConvertible<XmlBasedFileStructure> xc = item.Value;
+                //    filesBin.Add(item.Key.Replace(".cxml", ".cbin"), xc.Convert<BinaryBasedFileStructure>(mapperXmlToBi));
+                //}
 
 
                 //string path = @"C:\Temp";
@@ -107,7 +115,7 @@ namespace FileConverter
                 //    new BinaryCar
                 //    {
                 //        Date = DateTime.Now,
-                //        BrandName = "Nissan",
+                //        BrandName = "Ni",
                 //        Price = 1,
 
                 //    });
@@ -115,7 +123,7 @@ namespace FileConverter
                 //cars.Add(new BinaryCar
                 //{
                 //    Date = DateTime.Now.AddHours(1),
-                //    BrandName = "Mazda",
+                //    BrandName = "Ma",
                 //    Price = 2
                 //});
 

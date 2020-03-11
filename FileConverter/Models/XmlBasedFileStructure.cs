@@ -1,15 +1,17 @@
-﻿using FileConverter.Constants;
-using FileConverter.Converters;
-using FileConverter.Extensions;
+﻿using CommonFileConverter.Constants;
+using CommonFileConverter.Extensions;
+using CommonFileConverter.Interfaces;
+using CommonFileConverter.Mappers;
+using CommonFileConverter.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 
-namespace FileConverter.Models
+namespace XmlBinFileConverter.Models
 {
     [Serializable]
     [XmlRoot("Document")]
-    public class XmlBasedFileStructure : BaseFileStructure, IInitializable<BinaryBasedFileStructure>/*, IConvertible<XmlBasedFileStructure>*/
+    public class XmlBasedFileStructure : BaseFileStructure, IInitializable<BinaryBasedFileStructure>, IConvertible<XmlBasedFileStructure>
     {
         public XmlBasedFileStructure() { }
         public XmlBasedFileStructure(CarsCollection<XmlCar> cars)
@@ -25,6 +27,7 @@ namespace FileConverter.Models
         public override void Validate()
         {
             base.Validate();
+            Cars.ThrowArgumentNullExceptionIfNull();
             this.Cars.Validate();
         }
 
@@ -34,10 +37,10 @@ namespace FileConverter.Models
             Cars = new CarsCollection<XmlCar>(from.Cars.Convert(new Mapper<BinaryCar, XmlCar>()));
         }
 
-        //TTo IConvertible<XmlBasedFileStructure>.Convert<TTo>(Mapper<XmlBasedFileStructure, TTo> mapper)
-        //{
-        //    mapper.ThrowArgumentNullExceptionIfNull();
-        //    return mapper.Convert(this);
-        //}
+        TTo IConvertible<XmlBasedFileStructure>.Convert<TTo>(Mapper<XmlBasedFileStructure, TTo> mapper)
+        {
+            mapper.ThrowArgumentNullExceptionIfNull();
+            return mapper.Convert(this);
+        }
     }
 }

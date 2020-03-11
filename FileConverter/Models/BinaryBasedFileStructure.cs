@@ -1,12 +1,13 @@
-﻿using FileConverter.Constants;
-using FileConverter.Converters;
-using FileConverter.Extensions;
+﻿using CommonFileConverter.Constants;
+using CommonFileConverter.Extensions;
+using CommonFileConverter.Interfaces;
+using CommonFileConverter.Mappers;
+using CommonFileConverter.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 
-namespace FileConverter.Models
+namespace XmlBinFileConverter.Models
 {
     [Serializable]
     public class BinaryBasedFileStructure : BaseFileStructure, ISerializable, IInitializable<XmlBasedFileStructure>, IConvertible<BinaryBasedFileStructure>
@@ -40,12 +41,14 @@ namespace FileConverter.Models
         public override void Validate()
         {
             base.Validate();
-            this.Cars.Validate();
+            Cars.ThrowArgumentNullExceptionIfNull();
+            Cars.Validate();
         }
 
         TTo IConvertible<BinaryBasedFileStructure>.Convert<TTo>(Mapper<BinaryBasedFileStructure, TTo> mapper)
         {
-           return mapper.Convert(this);
+            mapper.ThrowArgumentNullExceptionIfNull();
+            return mapper.Convert(this);
         }
 
         void IInitializable<XmlBasedFileStructure>.Initialize(XmlBasedFileStructure from)

@@ -1,18 +1,19 @@
-﻿using FileConverter.Extensions;
-using FileConverter.Models;
+﻿using CommonFileConverter.Extensions;
+using CommonFileConverter.Interfaces;
+using CommonFileConverter.Models;
 using System.IO;
-using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
-namespace FileConverter.Converters
+namespace CommonFileConverter.Serializers
 {
-    internal class XmlBasedSerializer<T> : ISerializer<T> where T : BaseFileStructure
+    public class BinaryBasedSerializer<T> : ISerializer<T> where T : BaseFileStructure
     {
-        internal XmlBasedSerializer()
+        public BinaryBasedSerializer()
         {
-            Serializer = new XmlSerializer(typeof(T));
+            Serializer = new BinaryFormatter();
         }
 
-        private XmlSerializer Serializer { get; set; }
+        private BinaryFormatter Serializer { get; set; }
 
         public T Deserialize(Stream serializationStream)
         {

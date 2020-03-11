@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace FileConverter.Exceptions
+namespace CommonFileConverter.Exceptions
 {
     /// <summary>
-    /// Represents exception occured during file saving
+    /// Represents exception occurred during file saving
     /// </summary>
     public class ModifyFileException : FileException
     {

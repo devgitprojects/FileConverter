@@ -1,10 +1,8 @@
-﻿using FileConverter.Converters;
-using FileConverter.Extensions;
+﻿using CommonFileConverter.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace FileConverter.Models
+namespace XmlBinFileConverter.Models
 {
     [Serializable]
     public class CarsCollection<T> : SerializableKeyedCollection<string, T>

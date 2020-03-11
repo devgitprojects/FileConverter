@@ -1,6 +1,8 @@
-﻿using FileConverter.Constants;
-using FileConverter.Converters;
-using FileConverter.Extensions;
+﻿using CommonFileConverter.Constants;
+using CommonFileConverter.Extensions;
+using CommonFileConverter.Interfaces;
+using CommonFileConverter.Mappers;
+using CommonFileConverter.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -8,7 +10,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace FileConverter.Models
+namespace XmlBinFileConverter.Models
 {
     [Serializable]
     public class XmlCar : BaseFileStructure, IXmlSerializable, IConvertible<XmlCar>, IInitializable<BinaryCar>

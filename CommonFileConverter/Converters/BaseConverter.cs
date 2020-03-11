@@ -1,67 +1,70 @@
-﻿using FileConverter.Constants;
-using FileConverter.Exceptions;
-using FileConverter.Extensions;
-using FileConverter.Models;
+﻿using CommonFileConverter.Constants;
+using CommonFileConverter.Exceptions;
+using CommonFileConverter.Extensions;
+using CommonFileConverter.Interfaces;
+using CommonFileConverter.Mappers;
+using CommonFileConverter.Models;
 using Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace FileConverter.Converters
+namespace CommonFileConverter.Converters
 {
-    internal class BaseConverter<T> where T : BaseFileStructure
+    public class BaseConverter<T> where T : BaseFileStructure
     {
-        internal BaseConverter(ISerializer<T> serializer)
+        protected BaseConverter(ISerializer<T> serializer)
         {
-            this.Serializer = serializer;
+            serializer.ThrowArgumentNullExceptionIfNull();
+            Serializer = serializer;
+        }
+
+        public BaseConverter(ISerializer<T> serializer, MappersHolder mappersHolder)
+        {
+            mappersHolder.ThrowArgumentNullExceptionIfNull();
+            Mappers = mappersHolder;
         }
 
         public ISerializer<T> Serializer { get; protected set; }
+        public MappersHolder Mappers { get; protected set; }
 
-        public virtual IDictionary<string, C> Convert<C>(IDictionary<string, T> filesToConvert, ISerializer<C> serializerC, ISerializer<T> serializerT) where C : BaseFileStructure
+        public virtual IDictionary<string, TConvertTo> Convert<TConvertTo>(IDictionary<string, T> filesToConvert)
+            where TConvertTo : BaseFileStructure, IInitializable<T>, new()
         {
-            //Stream stream = new MemoryStream();
-            //using (stream)
-            //{
-            //    Serializer.Serialize(stream, source);
-            //    stream.Seek(0, SeekOrigin.Begin);
-            //    //return (T)formatter.Deserialize(stream);
-            //}
-            ConcurrentDictionary<string, C> converted = new ConcurrentDictionary<string, C>();
+            ConcurrentDictionary<string, TConvertTo> converted = new ConcurrentDictionary<string, TConvertTo>();
+            Mapper<T, TConvertTo> mapper = Mappers.GetOrAdd<Mapper<T, TConvertTo>, T, TConvertTo>();
+            var exceptions = new ConcurrentQueue<Exception>();
 
             Parallel.ForEach(filesToConvert, file =>
             {
-                Stream stream = null;
+                string convertedFilePath = String.Empty;
+                string oldExtension = Path.GetExtension(file.Key);
+                string newExtension = file.Key.Replace(oldExtension, mapper.ConvertedFileExtension);
+
                 try
                 {
-                    stream = new MemoryStream();
-                    serializerT.Serialize(stream, file.Value);
-                    stream.Seek(0, SeekOrigin.Begin);
-                    var convertedFile = serializerC.Deserialize(stream);
-                    converted.AddOrUpdate(file.Key, convertedFile, (p, f) => convertedFile);
+                    var convertedFile = mapper.Convert(file.Value);
+                    convertedFilePath = file.Key.Replace(Path.GetExtension(file.Key), mapper.ConvertedFileExtension);
+                    converted.AddOrUpdate(convertedFilePath, convertedFile, (p, f) => convertedFile);
                     Logger.Instance.Info("[CONVERT] {0}", file.Key);
                 }
                 catch (Exception ex)
                 {
-                    //Logger.Instance.Error(LogMessages.ReadFileExceptionText + " /n {1}", path, ex.ToString());
-                    //exceptions.Enqueue(new ReadFileException(String.Format(LogMessages.ReadFileExceptionText, path), ex));
-                }
-                finally
-                {
-                    stream.DisposeIfNotNull();
+                    Logger.Instance.Error(LogMessages.ConvertFileException + " /n {3}", convertedFilePath, oldExtension, mapper.ConvertedFileExtension, ex.ToString());
+                    exceptions.Enqueue(new ConvertFileException(String.Format(LogMessages.ConvertFileException, convertedFilePath, oldExtension, mapper.ConvertedFileExtension), ex));
                 }
             });
 
-            return null;
+            exceptions.ThrowAggregateExceptionIfInnerExceptionPresent();
+
+            return converted;
         }
 
         public void Delete(params string[] filesToDelete)
         {
             filesToDelete.ThrowArgumentNullExceptionIfNull();
-
             var exceptions = new ConcurrentQueue<Exception>();
 
             Parallel.ForEach(filesToDelete, file =>
@@ -86,8 +89,7 @@ namespace FileConverter.Converters
 
         public virtual IDictionary<string, T> Read(params string[] filesPaths)
         {            
-            filesPaths.ThrowArgumentNullExceptionIfNull();           
-
+            filesPaths.ThrowArgumentNullExceptionIfNull();
             ConcurrentDictionary<string, T> files = new ConcurrentDictionary<string, T>();
             var exceptions = new ConcurrentQueue<Exception>();
 
@@ -120,7 +122,6 @@ namespace FileConverter.Converters
         public virtual void Save(IDictionary<string, T> filesToSave)
         {            
             filesToSave.ThrowArgumentNullExceptionIfNull();
-
             var exceptions = new ConcurrentQueue<Exception>();
 
             Parallel.ForEach(filesToSave, file =>

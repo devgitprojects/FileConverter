@@ -1,13 +1,14 @@
-﻿using FileConverter.Constants;
-using FileConverter.Converters;
-using FileConverter.Extensions;
+﻿using CommonFileConverter.Constants;
+using CommonFileConverter.Extensions;
+using CommonFileConverter.Interfaces;
+using CommonFileConverter.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace FileConverter.Models
+namespace CommonFileConverter.Models
 {
     [Serializable]
     public abstract class SerializableKeyedCollection<TKey, TValue> : KeyedCollection<TKey, TValue> where TValue : BaseFileStructure

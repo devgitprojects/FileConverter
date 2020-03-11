@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace FileConverter.Exceptions
+namespace CommonFileConverter.Exceptions
 {
     /// <summary>
-    /// Represents base class for all exceptions occured during file handling
+    /// Represents base class for all exceptions occurred during file handling
     /// </summary>
     public class FileException : Exception
     {
