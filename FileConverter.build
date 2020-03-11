@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="FileConverter">
+	<property name="MSBuildPath" value="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"/>    
+	<property name="SolutionFile" value="FileConverter.sln"/>
+	<property name="SolutionConfiguration" value="Release"/>
+	<target name="build">
+    <exec program="${MSBuildPath}">
+        <arg line='"${SolutionFile}"' />
+        <arg line="/property:Configuration=${SolutionConfiguration}" />
+        <arg value="/target:Rebuild" />
+        <arg value="/verbosity:minimal" />
+        <arg value="/nologo" />
+    </exec>
+</target>
+</project>
