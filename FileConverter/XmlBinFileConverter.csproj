@@ -46,8 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mappers\BinaryMapper.cs" />
-    <Compile Include="Mappers\XmlMapper.cs" />
+    <Compile Include="Constants\XmlBinMessages.cs" />
+    <Compile Include="Converters\BinaryFileConverter.cs" />
+    <Compile Include="Converters\XmlFileConverter.cs" />
     <Compile Include="Models\XmlCar.cs" />
     <Compile Include="Models\CarsCollection.cs" />
     <Compile Include="Models\XmlBasedFileStructure.cs" />

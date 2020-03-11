@@ -15,15 +15,11 @@ namespace CommonFileConverter.Converters
 {
     public class BaseConverter<T> where T : BaseFileStructure
     {
-        protected BaseConverter(ISerializer<T> serializer)
-        {
-            serializer.ThrowArgumentNullExceptionIfNull();
-            Serializer = serializer;
-        }
-
         public BaseConverter(ISerializer<T> serializer, MappersHolder mappersHolder)
         {
+            serializer.ThrowArgumentNullExceptionIfNull();
             mappersHolder.ThrowArgumentNullExceptionIfNull();
+            Serializer = serializer;
             Mappers = mappersHolder;
         }
 

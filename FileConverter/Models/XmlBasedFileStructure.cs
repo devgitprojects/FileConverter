@@ -6,11 +6,12 @@ using CommonFileConverter.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
+using XmlBinFileConverter.Constants;
 
 namespace XmlBinFileConverter.Models
 {
     [Serializable]
-    [XmlRoot("Document")]
+    [XmlRoot(XmlBinMessages.FileStructureFields.Document)]
     public class XmlBasedFileStructure : BaseFileStructure, IInitializable<BinaryBasedFileStructure>, IConvertible<XmlBasedFileStructure>
     {
         public XmlBasedFileStructure() { }
@@ -20,8 +21,8 @@ namespace XmlBinFileConverter.Models
             Cars = cars;
         }
 
-        [XmlElement("Car")]
-        [Required(ErrorMessage = LogMessages.CollectionShouldContainZeroOrMoreItems + "Cars")]
+        [XmlElement(XmlBinMessages.FileStructureFields.Car)]
+        [Required(ErrorMessage = LogMessages.CollectionShouldContainZeroOrMoreItems + XmlBinMessages.FileStructureFields.Cars)]
         public CarsCollection<XmlCar> Cars { get; set; }
 
         public override void Validate()
@@ -31,16 +32,24 @@ namespace XmlBinFileConverter.Models
             this.Cars.Validate();
         }
 
-        void IInitializable<BinaryBasedFileStructure>.Initialize(BinaryBasedFileStructure from)
-        {
-            from.ThrowArgumentNullExceptionIfNull();
-            Cars = new CarsCollection<XmlCar>(from.Cars.Convert(new Mapper<BinaryCar, XmlCar>()));
-        }
+        #region  IConvertible<XmlBasedFileStructure>
 
         TTo IConvertible<XmlBasedFileStructure>.Convert<TTo>(Mapper<XmlBasedFileStructure, TTo> mapper)
         {
             mapper.ThrowArgumentNullExceptionIfNull();
             return mapper.Convert(this);
         }
+
+        #endregion
+
+        #region  IInitializable<BinaryBasedFileStructure>
+
+        void IInitializable<BinaryBasedFileStructure>.Initialize(BinaryBasedFileStructure from)
+        {
+            from.ThrowArgumentNullExceptionIfNull();
+            Cars = new CarsCollection<XmlCar>(from.Cars.Convert(new Mapper<BinaryCar, XmlCar>()));
+        }
+
+        #endregion
     }
 }

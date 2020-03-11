@@ -16,13 +16,13 @@ namespace CommonFileConverter.Mappers
         where TTo : IInitializable<TFrom>, new()
     {
         public Mapper() { }
-        public Mapper(string convertTofileExtension)
+        public Mapper(string convertedfileExtension)
         {
             if (!Path.HasExtension(convertTofileExtension))
             {
-                throw new ArgumentException(String.Format(LogMessages.FileExtensionIsNotValid, convertTofileExtension));
+                throw new ArgumentException(String.Format(LogMessages.FileExtensionIsNotValid, convertedfileExtension));
             }
-            ConvertedFileExtension = convertTofileExtension;
+            ConvertedFileExtension = convertedfileExtension;
         }
 
         public string ConvertedFileExtension { get; private set; }
@@ -34,5 +34,4 @@ namespace CommonFileConverter.Mappers
             return converted;
         }
     }
-
 }
