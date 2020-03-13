@@ -14,15 +14,9 @@ namespace CommonFileConverter.Serializers
         public virtual T Deserialize(Stream serializationStream)
         {
             serializationStream.ThrowArgumentNullExceptionIfNull();
-            T deserialized = default(T);
-            using (BinaryReader reader = new BinaryReader(serializationStream))
-            {
-                byte[] buffer = new byte[Marshal.SizeOf(typeof(T))];
-                reader.Read(buffer, 0, Marshal.SizeOf(typeof(T)));
-                deserialized = RawDeserialize(typeof(T), ref buffer) as T;
-            }
-
-            return deserialized;
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(T))];
+            serializationStream.Read(buffer, 0, Marshal.SizeOf(typeof(T)));
+            return RawDeserialize(typeof(T), ref buffer) as T;
         }
 
         public virtual void Serialize(Stream serializationStream, T graph)

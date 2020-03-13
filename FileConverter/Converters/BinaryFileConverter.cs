@@ -8,12 +8,11 @@ namespace XmlBinFileConverter.Converters
 {
     public class BinaryFileConverter : BaseConverter<BinaryCarsFile>
     {
-        public BinaryFileConverter() : base(new BinaryCarsSerializer(), new MappersHolder())
+        public BinaryFileConverter() : this(new BinaryCarsSerializer(), new MappersHolder()) { }
+        public BinaryFileConverter(ISerializer<BinaryCarsFile> serializer, MappersHolder mappersHolder) : base(serializer, mappersHolder)
         {
             Mappers.AddOrUpdate<Mapper<BinaryCarsFile, XmlCarsFile>, BinaryCarsFile, XmlCarsFile>(
                 new Mapper<BinaryCarsFile, XmlCarsFile>(".cxml"));
         }
-
-        public BinaryFileConverter(ISerializer<BinaryCarsFile> serializer, MappersHolder mappersHolder) : base(serializer, mappersHolder) { }
     }
 }

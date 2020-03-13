@@ -35,21 +35,19 @@ namespace CommonFileConverter.Converters
 
             Parallel.ForEach(filesToConvert, file =>
             {
-                string convertedFilePath = String.Empty;
                 string oldExtension = Path.GetExtension(file.Key);
-                string newExtension = file.Key.Replace(oldExtension, mapper.ConvertedFileExtension);
+                string newPath = file.Key.Replace(oldExtension, mapper.ConvertedFileExtension);
 
                 try
                 {
                     var convertedFile = mapper.Convert(file.Value);
-                    convertedFilePath = file.Key.Replace(Path.GetExtension(file.Key), mapper.ConvertedFileExtension);
-                    converted.AddOrUpdate(convertedFilePath, convertedFile, (p, f) => convertedFile);
+                    converted.AddOrUpdate(newPath, convertedFile, (p, f) => convertedFile);
                     Logger.Instance.Info("[CONVERT] {0}", file.Key);
                 }
                 catch (Exception ex)
                 {
-                    Logger.Instance.Error(LogMessages.ConvertFileException + " /n {3}", convertedFilePath, oldExtension, mapper.ConvertedFileExtension, ex.ToString());
-                    exceptions.Enqueue(new ConvertFileException(String.Format(LogMessages.ConvertFileException, convertedFilePath, oldExtension, mapper.ConvertedFileExtension), ex));
+                    Logger.Instance.Error(LogMessages.ConvertFileException + " /n {3}", newPath, oldExtension, mapper.ConvertedFileExtension, ex.ToString());
+                    exceptions.Enqueue(new ConvertFileException(String.Format(LogMessages.ConvertFileException, newPath, oldExtension, mapper.ConvertedFileExtension), ex));
                 }
             });
 
@@ -91,10 +89,10 @@ namespace CommonFileConverter.Converters
 
             Parallel.ForEach(filesPaths, path =>
             {
-                FileStream stream = null;
+                Stream stream = null;
                 try
                 {
-                    stream = File.OpenRead(path);
+                    stream = GetReadStream(path);
                     T file = this.Serializer.Deserialize(stream);
                     files.AddOrUpdate(path, file, (p, f) => file);
                     Logger.Instance.Info("[READ] {0}", path);
@@ -122,10 +120,10 @@ namespace CommonFileConverter.Converters
 
             Parallel.ForEach(filesToSave, file =>
             {
-                FileStream stream = null;
+                Stream stream = null;
                 try
                 {
-                    stream = File.Open(file.Key, FileMode.Create);
+                    stream = GetWriteStream(file.Key);
                     this.Serializer.Serialize(stream, file.Value);
                     Logger.Instance.Info("[SAVE] {0}", file.Key);
                 }
@@ -141,6 +139,16 @@ namespace CommonFileConverter.Converters
             });
 
             exceptions.ThrowAggregateExceptionIfInnerExceptionPresent();
+        }
+
+        protected virtual Stream GetReadStream(string filePath)
+        {
+            return File.OpenRead(filePath);
+        }
+
+        protected virtual Stream GetWriteStream(string filePath)
+        {
+            return File.Open(filePath, FileMode.Create);
         }
     }
 }

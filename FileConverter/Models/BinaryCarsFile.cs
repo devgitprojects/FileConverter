@@ -5,8 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.Serialization;
 using XmlBinFileConverter.Constants;
 
 namespace XmlBinFileConverter.Models

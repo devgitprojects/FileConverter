@@ -16,12 +16,12 @@ namespace CommonFileConverter.Mappers
         /// Maps the specified type argument to the given value. If
         /// the type argument already has a value within the dictionary, updates the value
         /// </summary>
-        public void AddOrUpdate<T, TFrom, TTo>(T value) 
-            where T : Mapper<TFrom, TTo>, new()
+        public void AddOrUpdate<TMapper, TFrom, TTo>(TMapper value) 
+            where TMapper : Mapper<TFrom, TTo>, new()
             where TFrom : BaseModel
             where TTo : IInitializable<TFrom>, new()
         {
-            dictionary.AddOrUpdate(typeof(T), value, (p, f) => value);
+            dictionary.AddOrUpdate(typeof(TMapper), value, (p, f) => value);
         }
 
         /// <summary>
@@ -29,12 +29,12 @@ namespace CommonFileConverter.Mappers
         /// KeyNotFoundException if the specified type argument has no
         /// entry in the dictionary.
         /// </summary>
-        public T GetOrAdd<T, TFrom, TTo>()
-            where T : Mapper<TFrom, TTo>, new()
+        public TMapper GetOrAdd<TMapper, TFrom, TTo>()
+            where TMapper : Mapper<TFrom, TTo>, new()
             where TFrom : BaseModel
             where TTo : IInitializable<TFrom>, new()
         {
-            return (T)dictionary.GetOrAdd(typeof(T), new T());
+            return (TMapper)dictionary.GetOrAdd(typeof(TMapper), new TMapper());
         }
 
         /// <summary>
@@ -43,17 +43,17 @@ namespace CommonFileConverter.Mappers
         /// fails, or returning true and setting the output parameter to the
         /// fetched value if it succeeds.
         /// </summary>
-        public bool TryGet<T, TFrom, TTo>(out T value)
-            where T : Mapper<TFrom, TTo>
+        public bool TryGet<TMapper, TFrom, TTo>(out TMapper value)
+            where TMapper : Mapper<TFrom, TTo>
             where TFrom : BaseModel
             where TTo : IInitializable<TFrom>, new()
         {
-            if (dictionary.TryGetValue(typeof(T), out object tmp))
+            if (dictionary.TryGetValue(typeof(TMapper), out object tmp))
             {
-                value = (T)tmp;
+                value = (TMapper)tmp;
                 return true;
             }
-            value = default(T);
+            value = default(TMapper);
             return false;
         }
     }
