@@ -6,14 +6,14 @@ using XmlBinFileConverter.Models;
 
 namespace XmlBinFileConverter.Converters
 {
-    public class XmlFileConverter : BaseConverter<XmlBasedFileStructure>
+    public class XmlFileConverter : BaseConverter<XmlCarsFile>
     {
-        public XmlFileConverter() : base(new XmlBasedSerializer<XmlBasedFileStructure>(), new MappersHolder())
+        public XmlFileConverter() : base(new XmlBasedSerializer<XmlCarsFile>(), new MappersHolder())
         {
-            Mappers.AddOrUpdate<Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>, XmlBasedFileStructure, BinaryBasedFileStructure>(
-                new Mapper<XmlBasedFileStructure, BinaryBasedFileStructure>(".cbin"));
+            Mappers.AddOrUpdate<Mapper<XmlCarsFile, BinaryCarsFile>, XmlCarsFile, BinaryCarsFile>(
+                new Mapper<XmlCarsFile, BinaryCarsFile>(".cbin"));
         }
 
-        public XmlFileConverter(ISerializer<XmlBasedFileStructure> serializer, MappersHolder mappersHolder) : base(serializer, mappersHolder) { }
+        public XmlFileConverter(ISerializer<XmlCarsFile> serializer, MappersHolder mappersHolder) : base(serializer, mappersHolder) { }
     }
 }

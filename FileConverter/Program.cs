@@ -13,6 +13,7 @@ using XmlBinFileConverter.Converters;
 using System.ComponentModel.DataAnnotations;
 using CommonFileConverter.Exceptions;
 using XmlBinFileConverter.Constants;
+using System.Runtime.InteropServices;
 
 namespace XmlBinFileConverter
 {
@@ -22,6 +23,7 @@ namespace XmlBinFileConverter
         {
             try
             {
+
                 string path = @"C:\Temp";
 
                 BinaryFileConverter binConv = new BinaryFileConverter();
@@ -36,13 +38,13 @@ namespace XmlBinFileConverter
                 });
                 cars.Add(new XmlCar
                 {
-                    Date = DateTime.Now.AddHours(1),
+                    Date = DateTime.Now.AddDays(1),
                     BrandName = "Mazda",
                     Price = 25000
                 });
 
-                XmlBasedFileStructure file = new XmlBasedFileStructure(cars);
-                Dictionary<string, XmlBasedFileStructure> files = new Dictionary<string, XmlBasedFileStructure>();
+                XmlCarsFile file = new XmlCarsFile(cars);
+                Dictionary<string, XmlCarsFile> files = new Dictionary<string, XmlCarsFile>();
 
                 for (int i = 0; i < 10; i++)
                 {
@@ -50,31 +52,31 @@ namespace XmlBinFileConverter
                 }
 
                 xmlConv.Save(files);
-                IDictionary<string, XmlBasedFileStructure> xmlFiles = xmlConv.Read(files.Keys.ToArray());
-                XmlBasedFileStructure file_0 = xmlFiles[Path.Combine(path, String.Format("{0}.cxml", 0))];
+                IDictionary<string, XmlCarsFile> xmlFiles = xmlConv.Read(files.Keys.ToArray());
+                XmlCarsFile file_0 = xmlFiles[Path.Combine(path, String.Format("{0}.cxml", 0))];
                 file_0.Cars["Mazda"].Price = 22000;
                 file_0.Cars["Mazda"].Date = DateTime.Now.AddMonths(1);
                 file_0.Cars.Remove("Alpha Romeo Brera");
-
+                
                 xmlConv.Save(xmlFiles);
 
                 xmlFiles = xmlConv.Read(files.Keys.ToArray());
-                XmlBasedFileStructure file_1 = xmlFiles[Path.Combine(path, String.Format("{0}.cxml", 1))];
+                XmlCarsFile file_1 = xmlFiles[Path.Combine(path, String.Format("{0}.cxml", 1))];
                 file_1.Cars.Add(new XmlCar
                 {
-                    Date = DateTime.Now.AddHours(1),
+                    Date = DateTime.Now.AddDays(1),
                     BrandName = "BMW",
                     Price = 40000
                 });
                 file_1.Cars.Add(new XmlCar
                 {
-                    Date = DateTime.Now.AddHours(2),
+                    Date = DateTime.Now.AddMonths(2),
                     BrandName = "ZAZ",
                     Price = 300
                 });
                 file_1.Cars.Add(new XmlCar
                 {
-                    Date = DateTime.Now.AddHours(-3),
+                    Date = DateTime.Now.AddMonths(-3),
                     BrandName = "WRANGLER",
                     Price = 60000
                 });
@@ -82,7 +84,7 @@ namespace XmlBinFileConverter
                 xmlConv.Save(xmlFiles);
 
                 xmlFiles = xmlConv.Read(files.Keys.ToArray());
-                IDictionary<string, BinaryBasedFileStructure> binaryFiles = xmlConv.Convert<BinaryBasedFileStructure>(xmlFiles);
+                IDictionary<string, BinaryCarsFile> binaryFiles = xmlConv.Convert<BinaryCarsFile>(xmlFiles);
 
                 try
                 {
@@ -108,7 +110,7 @@ namespace XmlBinFileConverter
                                 return true;
                             }
                         }
-                        return false; 
+                        return false;
                     });
 
                     foreach (var pathFile in binaryFiles)
@@ -124,8 +126,9 @@ namespace XmlBinFileConverter
                 xmlConv.Delete(files.Keys.ToArray());
 
                 binaryFiles = binConv.Read(binaryFiles.Keys.ToArray());
-                BinaryBasedFileStructure file_2 = binaryFiles[Path.Combine(path, String.Format("{0}.cbin", 2))];
+                BinaryCarsFile file_2 = binaryFiles[Path.Combine(path, String.Format("{0}.cbin", 2))];
                 file_2.Cars[0].Price = 21000;
+                file_2.Cars[0].Date.AddMonths(13);
                 file_2.Cars.RemoveAt(1);
                 binConv.Save(binaryFiles);
                 binaryFiles = binConv.Read(binaryFiles.Keys.ToArray());

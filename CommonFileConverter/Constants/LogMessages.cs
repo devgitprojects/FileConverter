@@ -14,5 +14,8 @@
         public const string StringExceedsMaxLenght = "String exceeds max length: ";
         public const string FileExtensionIsNotValid = "File extension is not valid: {0}";
 
+        public const string ValuesAreNotEqual = "Values are not equal: {0} == {1} and {2} == {3}";
+        public const string ValueNotInRange = "Value is not in range: ";
+
     }
 }

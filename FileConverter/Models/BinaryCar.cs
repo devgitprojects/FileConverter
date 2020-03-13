@@ -1,44 +1,50 @@
-﻿using CommonFileConverter.Constants;
-using CommonFileConverter.Interfaces;
+﻿using CommonFileConverter.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Runtime.Serialization;
+using System.Runtime.InteropServices;
 using XmlBinFileConverter.Constants;
 
 namespace XmlBinFileConverter.Models
 {
     [Serializable]
-    public class BinaryCar : XmlCar, ISerializable, IInitializable<XmlCar>
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class BinaryCar : XmlCar, IInitializable<XmlCar>
     {
         const string binaryDateFormat = "ddMMyyyy";
+        const int maxLenghtOfunicodeBrandName = 2;
 
         public BinaryCar() { }
 
-        protected BinaryCar(SerializationInfo info, StreamingContext context)
+        public ushort BrandNameLength { get; internal set; }
+        [StringLength(maxLenghtOfunicodeBrandName, ErrorMessage = XmlBinMessages.StringExceedsMaxLenght + XmlBinMessages.FileStructureFields.CarFields.BrandName)]
+        public override string BrandName
         {
-            Date = DateTime.ParseExact(info.GetString(XmlBinMessages.FileStructureFields.CarFields.Date), binaryDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal);
-            BrandNameLength = info.GetUInt16(XmlBinMessages.FileStructureFields.CarFields.BrandNameLength);
-            BrandName = info.GetString(XmlBinMessages.FileStructureFields.CarFields.BrandName);
-            Price = info.GetInt32(XmlBinMessages.FileStructureFields.CarFields.Price);
+            get
+            {
+                return base.BrandName;
+            }
+            set
+            {
+                base.BrandName = value;
+                BrandNameLength = (ushort)(string.IsNullOrEmpty(value) ? 0 : value.Length); ///will be validate during serialization
+            }
         }
 
-        [StringLength(2, ErrorMessage = LogMessages.StringExceedsMaxLenght + XmlBinMessages.FileStructureFields.CarFields.BrandName)]
-        public override string BrandName { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = LogMessages.ValueShouldBePositive + XmlBinMessages.FileStructureFields.CarFields.BrandNameLength)]
-        public ushort BrandNameLength { get; private set; }
-
-        #region ISerializable
-
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        public override bool Validate(out List<ValidationResult> errors)
         {
-            info.AddValue(XmlBinMessages.FileStructureFields.CarFields.Date, Date.ToString(binaryDateFormat));
-            info.AddValue(XmlBinMessages.FileStructureFields.CarFields.BrandNameLength, String.IsNullOrEmpty(BrandName) ? 0 : BrandName.Length);
-            info.AddValue(XmlBinMessages.FileStructureFields.CarFields.BrandName, BrandName);
-            info.AddValue(XmlBinMessages.FileStructureFields.CarFields.Price, Price);
-        }
+            bool isValid = base.Validate(out errors);
 
-        #endregion
+            ushort brandNameLenght = (ushort)(String.IsNullOrEmpty(BrandName) ? 0 : BrandName.Length);
+            if (brandNameLenght != BrandNameLength)
+            {
+                isValid = false;
+                errors.Add(new ValidationResult(String.Format(XmlBinMessages.ValuesAreNotEqual,
+                    XmlBinMessages.FileStructureFields.CarFields.BrandName, brandNameLenght, XmlBinMessages.FileStructureFields.CarFields.BrandNameLength, BrandNameLength)));
+            }
+
+            return isValid;
+        }
 
         #region  IInitializable<XmlCar>
 

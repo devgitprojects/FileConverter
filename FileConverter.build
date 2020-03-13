@@ -2,14 +2,34 @@
 <project name="FileConverter">
 	<property name="MSBuildPath" value="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"/>    
 	<property name="SolutionFile" value="FileConverter.sln"/>
-	<property name="SolutionConfiguration" value="Release"/>
-	<target name="build">
-    <exec program="${MSBuildPath}">
-        <arg line='"${SolutionFile}"' />
-        <arg line="/property:Configuration=${SolutionConfiguration}" />
-        <arg value="/target:Rebuild" />
-        <arg value="/verbosity:minimal" />
-        <arg value="/nologo" />
-    </exec>
-</target>
+
+	<property name="nunit.console.file" value="packages\NUnit.ConsoleRunner.3.11.1\tools\nunit3-console.exe" />
+	<property name="unit.tests.working.dir" value="FileConverterTests\bin\Debug\" />
+	<property name="unit.tests.assembly.name" value="FileConverterTests.dll" />
+	
+	<target name="release">
+		<exec program="${MSBuildPath}">
+			<arg line='"${SolutionFile}"' />
+			<arg line="/property:Configuration=Release" />
+			<arg value="/target:Rebuild" />
+			<arg value="/verbosity:minimal" />
+			<arg value="/nologo" />
+		</exec>
+	</target>
+	
+	<target name="debug">
+		<exec program="${MSBuildPath}">
+			<arg line='"${SolutionFile}"' />
+			<arg line="/property:Configuration=Debug" />
+			<arg value="/target:Rebuild" />
+			<arg value="/verbosity:normal" />
+			<arg value="/nologo" />
+		</exec>
+	</target>
+
+	<target name="tests" depends="debug">
+		<exec program="${nunit.console.file}" failonerror="true" verbose="true"
+        workingdir="${unit.tests.working.dir}"
+        commandline="${unit.tests.assembly.name}"/>	 
+	</target>
 </project>

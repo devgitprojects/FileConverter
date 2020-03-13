@@ -15,13 +15,13 @@ namespace CommonFileConverter.Serializers
 
         private XmlSerializer Serializer { get; set; }
 
-        public T Deserialize(Stream serializationStream)
+        public virtual T Deserialize(Stream serializationStream)
         {
             serializationStream.ThrowArgumentNullExceptionIfNull();
             return (T)Serializer.Deserialize(serializationStream);
         }
 
-        public void Serialize(Stream serializationStream, T graph)
+        public virtual void Serialize(Stream serializationStream, T graph)
         {
             serializationStream.ThrowArgumentNullExceptionIfNull();
             graph.ThrowArgumentNullExceptionIfNull();

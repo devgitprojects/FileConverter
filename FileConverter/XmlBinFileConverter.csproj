@@ -41,13 +41,15 @@
     <Compile Include="Constants\XmlBinMessages.cs" />
     <Compile Include="Converters\BinaryFileConverter.cs" />
     <Compile Include="Converters\XmlFileConverter.cs" />
+    <Compile Include="Models\BaseCarsFile.cs" />
     <Compile Include="Models\XmlCar.cs" />
     <Compile Include="Models\CarsCollection.cs" />
-    <Compile Include="Models\XmlBasedFileStructure.cs" />
-    <Compile Include="Models\BinaryBasedFileStructure.cs" />
+    <Compile Include="Models\XmlCarsFile.cs" />
+    <Compile Include="Models\BinaryCarsFile.cs" />
     <Compile Include="Models\BinaryCar.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializers\BinaryCarsSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
