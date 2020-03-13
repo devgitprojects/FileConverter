@@ -20,6 +20,12 @@ namespace XmlBinFileConverter.Models
         const string xmlDateFormat = "dd.MM.yyyy";
 
         public XmlCar() { }
+        public XmlCar(DateTime date, string brandName, uint price) 
+        {
+            Date = date;
+            BrandName = brandName;
+            Price = price;
+        }
 
         public DateTime Date { get; set; }
         public virtual string BrandName { get; set; }

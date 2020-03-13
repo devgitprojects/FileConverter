@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6FDCB212-1BF5-475F-A70F-EC108F6509F0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>XmlBinFileConverter</RootNamespace>
-    <AssemblyName>XmlBinFileConverter</AssemblyName>
+    <ProjectGuid>{C321B74C-6F5B-48E2-AB0B-96C7A71A2E49}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>FileConverterClient</RootNamespace>
+    <AssemblyName>FileConverterClient</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -24,49 +25,32 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\ReleaseLibs\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Constants\XmlBinMessages.cs" />
-    <Compile Include="Converters\BinaryFileConverter.cs" />
-    <Compile Include="Converters\XmlFileConverter.cs" />
-    <Compile Include="Models\BaseCarsFile.cs" />
-    <Compile Include="Models\XmlCar.cs" />
-    <Compile Include="Models\CarsCollection.cs" />
-    <Compile Include="Models\XmlCarsFile.cs" />
-    <Compile Include="Models\BinaryCarsFile.cs" />
-    <Compile Include="Models\BinaryCar.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serializers\BinaryCarsSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonFileConverter\CommonFileConverter.csproj">
       <Project>{E53FCDF0-4D80-46BB-A0F6-90097F03B929}</Project>
       <Name>CommonFileConverter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Logger\Logger.csproj">
-      <Project>{12B28560-F80B-4A1E-9E5C-5C420CD6977E}</Project>
-      <Name>Logger</Name>
+    <ProjectReference Include="..\FileConverter\XmlBinFileConverter.csproj">
+      <Project>{6FDCB212-1BF5-475F-A70F-EC108F6509F0}</Project>
+      <Name>XmlBinFileConverter</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

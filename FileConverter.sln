@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlBinFileConverter", "FileConverter\XmlBinFileConverter.csproj", "{6FDCB212-1BF5-475F-A70F-EC108F6509F0}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonFileConverter", "CommonFileConverter\CommonFileConverter.csproj", "{E53FCDF0-4D80-46BB-A0F6-90097F03B929}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileConverterTests", "FileConverterTests\FileConverterTests.csproj", "{3E3E7D53-2A26-4EB1-84C5-BA9124C8D724}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileConverterClient", "FileConverterClient\FileConverterClient.csproj", "{C321B74C-6F5B-48E2-AB0B-96C7A71A2E49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,9 @@ Global
 		{3E3E7D53-2A26-4EB1-84C5-BA9124C8D724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3E3E7D53-2A26-4EB1-84C5-BA9124C8D724}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E3E7D53-2A26-4EB1-84C5-BA9124C8D724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C321B74C-6F5B-48E2-AB0B-96C7A71A2E49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C321B74C-6F5B-48E2-AB0B-96C7A71A2E49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C321B74C-6F5B-48E2-AB0B-96C7A71A2E49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
