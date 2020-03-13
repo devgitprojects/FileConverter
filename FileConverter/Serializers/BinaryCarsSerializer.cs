@@ -40,7 +40,7 @@ namespace XmlBinFileConverter.Serializers
             }
 
             Buffer.BlockCopy(carsRawData, 0, rawData, headerRawData.Length + recordsCountRawData.Length, carsRawData.Length);
-            Write(serializationStream, rawData);
+            serializationStream.Write(rawData, 0, rawData.Length);
         }
 
         public override BinaryCarsFile Deserialize(Stream serializationStream)

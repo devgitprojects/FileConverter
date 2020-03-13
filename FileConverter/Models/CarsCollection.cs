@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace XmlBinFileConverter.Models
 {
     [Serializable]
-    public class CarsCollection<T> : SerializableKeyedCollection<string, T>
+    public class CarsCollection<T> : ConvertibleKeyedCollection<string, T>
         where T : XmlCar
     {
         public CarsCollection() : base() { }

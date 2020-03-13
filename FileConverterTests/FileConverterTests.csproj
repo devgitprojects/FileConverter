@@ -47,11 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="SerializerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonFileConverter\CommonFileConverter.csproj">
+      <Project>{E53FCDF0-4D80-46BB-A0F6-90097F03B929}</Project>
+      <Name>CommonFileConverter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileConverter\XmlBinFileConverter.csproj">
+      <Project>{6FDCB212-1BF5-475F-A70F-EC108F6509F0}</Project>
+      <Name>XmlBinFileConverter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

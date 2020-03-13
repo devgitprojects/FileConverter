@@ -48,8 +48,8 @@
     <Compile Include="Interfaces\IInitializable.cs" />
     <Compile Include="Mappers\Mapper.cs" />
     <Compile Include="Mappers\MappersHolder.cs" />
-    <Compile Include="Models\BaseFileStructure.cs" />
-    <Compile Include="Models\SerializableKeyedCollection.cs" />
+    <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\ConvertibleKeyedCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\BinaryBasedSerializer.cs" />
     <Compile Include="Interfaces\ISerializer.cs" />

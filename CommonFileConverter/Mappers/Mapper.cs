@@ -12,7 +12,7 @@ namespace CommonFileConverter.Mappers
     /// <typeparam name="TFrom"></typeparam>
     /// <typeparam name="TTo"></typeparam>
     public class Mapper<TFrom, TTo>
-        where TFrom : BaseFileStructure
+        where TFrom : BaseModel
         where TTo : IInitializable<TFrom>, new()
     {
         public Mapper() { }

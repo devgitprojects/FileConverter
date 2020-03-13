@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CommonFileConverter.Converters
 {
-    public class BaseConverter<T> where T : BaseFileStructure
+    public class BaseConverter<T> where T : BaseModel
     {
         public BaseConverter(ISerializer<T> serializer, MappersHolder mappersHolder)
         {
@@ -27,7 +27,7 @@ namespace CommonFileConverter.Converters
         public MappersHolder Mappers { get; protected set; }
 
         public virtual IDictionary<string, TConvertTo> Convert<TConvertTo>(IDictionary<string, T> filesToConvert)
-            where TConvertTo : BaseFileStructure, IInitializable<T>, new()
+            where TConvertTo : BaseModel, IInitializable<T>, new()
         {
             ConcurrentDictionary<string, TConvertTo> converted = new ConcurrentDictionary<string, TConvertTo>();
             Mapper<T, TConvertTo> mapper = Mappers.GetOrAdd<Mapper<T, TConvertTo>, T, TConvertTo>();

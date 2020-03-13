@@ -18,7 +18,7 @@ namespace CommonFileConverter.Mappers
         /// </summary>
         public void AddOrUpdate<T, TFrom, TTo>(T value) 
             where T : Mapper<TFrom, TTo>, new()
-            where TFrom : BaseFileStructure
+            where TFrom : BaseModel
             where TTo : IInitializable<TFrom>, new()
         {
             dictionary.AddOrUpdate(typeof(T), value, (p, f) => value);
@@ -31,7 +31,7 @@ namespace CommonFileConverter.Mappers
         /// </summary>
         public T GetOrAdd<T, TFrom, TTo>()
             where T : Mapper<TFrom, TTo>, new()
-            where TFrom : BaseFileStructure
+            where TFrom : BaseModel
             where TTo : IInitializable<TFrom>, new()
         {
             return (T)dictionary.GetOrAdd(typeof(T), new T());
@@ -45,7 +45,7 @@ namespace CommonFileConverter.Mappers
         /// </summary>
         public bool TryGet<T, TFrom, TTo>(out T value)
             where T : Mapper<TFrom, TTo>
-            where TFrom : BaseFileStructure
+            where TFrom : BaseModel
             where TTo : IInitializable<TFrom>, new()
         {
             if (dictionary.TryGetValue(typeof(T), out object tmp))

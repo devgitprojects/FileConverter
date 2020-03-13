@@ -9,7 +9,7 @@ namespace CommonFileConverter.Interfaces
     /// <typeparam name="TFrom"></typeparam>
     /// <seealso cref="IInitializable<TFrom>"/>
     public interface IConvertible<TFrom> 
-        where TFrom : BaseFileStructure
+        where TFrom : BaseModel
     {
         /// <summary>
         /// Converts instance of type <typeparamref name="TFrom"/> to instance of <typeparamref name="TTo"/> 

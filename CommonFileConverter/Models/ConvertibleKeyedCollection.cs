@@ -12,18 +12,18 @@ using System.Linq;
 namespace CommonFileConverter.Models
 {
     [Serializable]
-    public abstract class SerializableKeyedCollection<TKey, TValue> : KeyedCollection<TKey, TValue> where TValue : BaseFileStructure
+    public abstract class ConvertibleKeyedCollection<TKey, TValue> : KeyedCollection<TKey, TValue> where TValue : BaseModel
     {
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public SerializableKeyedCollection() : base() { }
-        public SerializableKeyedCollection(IEnumerable<TValue> enumerable) : base()
+        public ConvertibleKeyedCollection() : base() { }
+        public ConvertibleKeyedCollection(IEnumerable<TValue> enumerable) : base()
         {
             AddRange(enumerable);
         }
 
-        public SerializableKeyedCollection(IEqualityComparer<TKey> comparer) : base(comparer) { }
-        public SerializableKeyedCollection(IEqualityComparer<TKey> comparer, int dictionaryCreationThreshold) : base(comparer, dictionaryCreationThreshold) { }
+        public ConvertibleKeyedCollection(IEqualityComparer<TKey> comparer) : base(comparer) { }
+        public ConvertibleKeyedCollection(IEqualityComparer<TKey> comparer, int dictionaryCreationThreshold) : base(comparer, dictionaryCreationThreshold) { }
 
         public void AddRange(IEnumerable<TValue> enumerable)
         {

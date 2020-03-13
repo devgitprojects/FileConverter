@@ -9,7 +9,7 @@ namespace CommonFileConverter.Models
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-    public abstract class BaseFileStructure
+    public abstract class BaseModel
     {
         public virtual void Validate()
         {

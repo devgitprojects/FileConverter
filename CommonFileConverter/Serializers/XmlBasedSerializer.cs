@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace CommonFileConverter.Serializers
 {
-    public class XmlBasedSerializer<T> : ISerializer<T> where T : BaseFileStructure
+    public class XmlBasedSerializer<T> : ISerializer<T> where T : BaseModel
     {
         public XmlBasedSerializer()
         {

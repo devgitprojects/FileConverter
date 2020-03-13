@@ -9,7 +9,7 @@ namespace XmlBinFileConverter.Models
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-    public class BinaryCar : XmlCar, IInitializable<XmlCar>
+    public class BinaryCar : XmlCar, IInitializable<XmlCar>, IEquatable<BinaryCar>
     {
         const string binaryDateFormat = "ddMMyyyy";
         const int maxLenghtOfunicodeBrandName = 2;
@@ -45,6 +45,29 @@ namespace XmlBinFileConverter.Models
 
             return isValid;
         }
+
+        #region IEquatable<BinaryCar>
+
+        public override int GetHashCode()
+        {
+            var hashCode = -930785528;
+            hashCode = hashCode * -1521134295 + base.GetHashCode();
+            hashCode = hashCode * -1521134295 + BrandNameLength.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(BrandName);
+            return hashCode;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as BinaryCar);
+        }
+
+        public bool Equals(BinaryCar other)
+        {
+            return base.Equals(other) && BrandNameLength == other.BrandNameLength;
+        }
+
+        #endregion
 
         #region  IInitializable<XmlCar>
 

@@ -7,8 +7,10 @@ using System.Runtime.InteropServices;
 
 namespace CommonFileConverter.Serializers
 {
-    public class BinaryBasedSerializer<T> : ISerializer<T> where T : BaseFileStructure
+    public class BinaryBasedSerializer<T> : ISerializer<T> where T : BaseModel
     {
+        public BinaryBasedSerializer() { }
+
         public virtual T Deserialize(Stream serializationStream)
         {
             serializationStream.ThrowArgumentNullExceptionIfNull();
@@ -32,7 +34,7 @@ namespace CommonFileConverter.Serializers
             int rawsize = Marshal.SizeOf(graph);
             byte[] rawdata = new byte[rawsize];
             RawSerialize(graph, ref rawdata);
-            Write(serializationStream, rawdata);
+            serializationStream.Write(rawdata, 0, rawdata.Length);
         }
 
         protected void RawSerialize(object serializable, ref byte[] rawdataHolder)
@@ -48,21 +50,6 @@ namespace CommonFileConverter.Serializers
             using (GCSafeHandle handle = new GCSafeHandle(buffer))
             {
                 return handle.RawDeserialize(objectType);
-            }
-        }
-
-        protected void Write(Stream serializationStream, byte[] rawdata)
-        {
-            BinaryWriter writer = null;
-            try
-            {
-                writer = new BinaryWriter(serializationStream);
-                writer.Write(rawdata);
-            }
-            finally
-            {
-                writer.Flush();
-                writer.Close();
             }
         }
     }

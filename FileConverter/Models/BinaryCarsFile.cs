@@ -5,13 +5,14 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
 using XmlBinFileConverter.Constants;
 
 namespace XmlBinFileConverter.Models
 {
     [Serializable]
-    public class BinaryCarsFile : BaseCarsFile<BinaryCar>, IInitializable<XmlCarsFile>, IConvertible<BinaryCarsFile>
+    public class BinaryCarsFile : BaseCarsFile<BinaryCar>, IInitializable<XmlCarsFile>, IConvertible<BinaryCarsFile>, IEquatable<BinaryCarsFile>
     {
         const short headerValue = 0x2526;
 
@@ -60,6 +61,32 @@ namespace XmlBinFileConverter.Models
         {
             mapper.ThrowArgumentNullExceptionIfNull();
             return mapper.Convert(this);
+        }
+
+        #endregion
+
+        #region IEquatable<BinaryCarsFile>
+
+        public override int GetHashCode()
+        {
+            var hashCode = 152924670;
+            hashCode = hashCode * -1521134295 + base.GetHashCode();
+            hashCode = hashCode * -1521134295 + RecordsCount.GetHashCode();
+            hashCode = hashCode * -1521134295 + headerField.GetHashCode();
+            return hashCode;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as BinaryCarsFile);
+        }
+
+        public bool Equals(BinaryCarsFile other)
+        {
+            return other != null
+                && base.Equals(other)
+                && Header == other.Header
+                && RecordsCount == other.RecordsCount;
         }
 
         #endregion
