@@ -1,0 +1,131 @@
+Architecture description of the file converter library.
+
+The library provides abiblity to create, modify, remove and convert XML and Binary file formats (XML -> BIN and vice versa).
+
+UML scheme is ..\UMLClassScheme.pdf.
+
+The main unit is generic class BaseConverter, specific file converters are inherited from it (such as BinaryFileConverter and XmlFileConverter or any other custom converters). 
+BaseConverter сlass provide Save, Delete, Read and Convert public methods. As constructor parameters it accepts instance of serializer (class must implement ISerializer<T> interface) and MappersHolder (container for mappers, each mapper can create target (to be converted) file and invoke initialize method ).
+Save, Delete, Read and Convert operations are performed in parallel for each file.
+
+Serializer is used by converter for saving and reading instances of file models to and from stream respectively. Developer could add custom serializer by implemeting ISerializer<T> interface where T custom file model which could be serialized by serializer. 
+
+MappersHolder contains ConcurrentDictionary dictionary of Mappers. Converter retrieves needed mapper depending on type of source and target models.
+Mapper<TFrom, TConvertTo> mapper creates new instance of target model and invokes target model's Initialize method with source model as method's argument.
+
+File model implements IInitializable<TFrom> interface which provide ability to invoke Intitlize method. Initialize method perform initialization of target model based on source model. IInitializable<TFrom> interface should be implemented explicitly for custom models it will allow to add initialization of target model from different source models.
+
+Each model is inherited from BaseModel abstract class which have two virtual Validate methods. Class supports validation based on DataAnnotation library.
+Validate method is invoked by serializer before start of serialization process. Invoking of model's Validate method should be added to implemetation of Serialize() method for custom serializer. 
+  
+Additional points. Libriary contains IConvertible<TFrom> interface with TTo Convert<TTo>(Mapper<TFrom, TTo> mapper) method. It allows to perform custom "manual" models conversion without using converters. Convert() method accepts mapper for conversion of models.
+
+Nant build script is named FileConverter.build. Acceptable targets: 
+"debug" - build solution in Debug Any CPU configuration. 
+"release" - build solution in Release Any CPU configuration, skips FileConverterClient and FileConverterTests projects, output dir is ..\ReleaseLibs, 
+"tests"- invoke debug target and then executes tests from FileConverterTests,dll.
+ 
+
+Strong sides of Library:
+New file formats and serializers could be added in simple and flexible way without refactoring, just implement needed interfaces and use common engine.
+
+Weak sides of Library: 
+Explicit Interfaces Implementation may cause architecture design failures. And as result critical crashes such as StackOverflow (see warning CA1033: Interface methods should be callable by child types)
+
+
+The following steps should be done in case if we need to add support of new file format. For example we need to add support of conversion BIN and XML files to JSON based file model.
+
+1. Add JsonFileModel class, inherit it from BaseModel and IInitializable<XmlCarsFile>, IInitializable<BinaryCarsFile>.
+2. Explicitly implement both interfaces.
+3. Implement ISerializer<T> interface. Add new JsonSerializer class.
+4. Create instances of XmlFileConverter and BinaryFileConverter
+5. Add to them two mappers (Mappers public property): 
+	XML -> JSON: new Mapper<XmlCarsFile, JsonFileModel>(".cjson") and 
+	BIN -> JSON: new Mapper<BinaryCarsFile, JsonFileModel>(".cjson");
+6. Create instance of serializer JsonSerializer.
+7. Create instance of converter:
+
+	BaseConverter<JsonFileModel> converter = new BaseConverter<JsonFileModel>(serializer, new MappersHolder());
+	
+8. Read needed xml and bin files.
+9. Use xml and bin converters to convert files to JSON
+10. Use json converter to save converted json files.
+
+Complete example:
+
+namespace JsonFileConverter
+{
+    class Program
+    {
+        public class JsonFileModel : BaseModel, IInitializable<XmlCarsFile>, IInitializable<BinaryCarsFile>
+        {
+            [StringLength(100)] /// validation of property
+            public string Data { get; set; }
+
+            void IInitializable<XmlCarsFile>.Initialize(XmlCarsFile from)
+            {
+                /// here should be added initialization current instance members, e.g. copying data from source model
+                Data = from.GetHashCode().ToString(); 
+            }
+
+            void IInitializable<BinaryCarsFile>.Initialize(BinaryCarsFile from)
+            {
+                /// here should be added initialization current instance members, e.g. copying data from source model
+                Data = from.GetType().FullName;
+            }
+        }
+
+        public class JsonSerializer : ISerializer<JsonFileModel>
+        {
+            public JsonFileModel Deserialize(Stream serializationStream)
+            {
+                ///here should be implemented  deserialization model from stream
+                return new JsonFileModel { Data = "JSONDeserialized" };
+            }
+
+            public void Serialize(Stream serializationStream, JsonFileModel graph)
+            {
+                graph.Validate(); 
+                ///here should be implemented  serialization model to stream
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            var XMLtoJsonMapper = new Mapper<XmlCarsFile, JsonFileModel>(".cjson");
+            var BINtoJsonMapper = new Mapper<BinaryCarsFile, JsonFileModel>(".cjson");
+
+            JsonSerializer serializer = new JsonSerializer();
+            BaseConverter<JsonFileModel> converter = new BaseConverter<JsonFileModel>(serializer, new MappersHolder());
+
+            ///prepare xml and bin files
+            string path = Path.GetTempPath();
+            IDictionary<string, XmlCarsFile> xmlfiles = new Dictionary<string, XmlCarsFile>();
+            XmlCarsFile xmlfile = new XmlCarsFile(new CarsCollection<XmlCar>());
+            xmlfile.Cars.Add(new XmlCar { Date = DateTime.Now, BrandName = "Alpha Romeo Brera", Price = 37000 });
+            xmlfiles.Add(Path.Combine(path, "XmlCarsFile.cxml"), xmlfile);
+
+            IDictionary<string, BinaryCarsFile> binfiles = new Dictionary<string, BinaryCarsFile>();
+            BinaryCarsFile binfile = new BinaryCarsFile(new CarsCollection<BinaryCar>());
+            binfile.Cars.Add(new BinaryCar { Date = DateTime.Now, BrandName = "Ma", Price = 25000 });
+            binfiles.Add(Path.Combine(path, "BinaryCarsFile.cbin"), binfile);
+
+            /// create xml and bin files, then read it and convert to JSON
+            XmlFileConverter xmlConv = new XmlFileConverter();
+            xmlConv.Mappers.AddOrUpdate<Mapper<XmlCarsFile, JsonFileModel>, XmlCarsFile, JsonFileModel>(XMLtoJsonMapper);
+            xmlConv.Save(xmlfiles);
+            var jsonFilesFromXml = xmlConv.Convert<JsonFileModel>(xmlConv.Read(xmlfiles.Keys.ToArray()));
+
+
+            BinaryFileConverter binConv = new BinaryFileConverter();
+            binConv.Mappers.AddOrUpdate<Mapper<BinaryCarsFile, JsonFileModel>, BinaryCarsFile, JsonFileModel>(BINtoJsonMapper);
+            binConv.Save(binfiles);
+            var jsonFilesFromBin = binConv.Convert<JsonFileModel>(binConv.Read(binfiles.Keys.ToArray()));
+
+            ///save json files
+            converter.Save(jsonFilesFromXml);
+            converter.Save(jsonFilesFromBin);
+		}
+	}	
+}
+
