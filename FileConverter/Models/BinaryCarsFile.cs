@@ -15,7 +15,10 @@ namespace XmlBinFileConverter.Models
         const short headerValue = 0x2526;
 
         public BinaryCarsFile() { }
-        public BinaryCarsFile(CarsCollection<BinaryCar> cars) : base(cars) { }
+        public BinaryCarsFile(CarsCollection<BinaryCar> cars) : base(cars) 
+        {
+            SunbscribeCarsCollectionEvents();
+        }
 
         [Range(headerValue, headerValue, ErrorMessage = XmlBinMessages.ValueNotInRange + XmlBinMessages.FileStructureFields.Header)]
         public short Header { get { return headerField; } }
@@ -37,8 +40,7 @@ namespace XmlBinFileConverter.Models
                 base.Cars = value;
                 if (base.Cars != null)
                 {
-                    base.Cars.CollectionChanged += CarsCollectionChanged;
-                    CarsCollectionChanged(base.Cars, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                    SunbscribeCarsCollectionEvents();
                 }
             }
         }
@@ -56,6 +58,12 @@ namespace XmlBinFileConverter.Models
         #region  IConvertible<BinaryBasedFileStructure>
 
         TTo IConvertible<BinaryCarsFile>.Convert<TTo>(Mapper<BinaryCarsFile, TTo> mapper)
+        {
+            return Convert(mapper);
+        }
+
+        protected virtual TTo Convert<TTo>(Mapper<BinaryCarsFile, TTo> mapper)
+            where TTo : IInitializable<BinaryCarsFile>, new()
         {
             mapper.ThrowArgumentNullExceptionIfNull();
             return mapper.Convert(this);
@@ -93,6 +101,11 @@ namespace XmlBinFileConverter.Models
 
         void IInitializable<XmlCarsFile>.Initialize(XmlCarsFile from)
         {
+            Initialize(from);
+        }
+
+        protected virtual void Initialize(XmlCarsFile from)
+        {
             from.ThrowArgumentNullExceptionIfNull();
             Cars = new CarsCollection<BinaryCar>(from.Cars.Convert(new Mapper<XmlCar, BinaryCar>()));
         }
@@ -103,6 +116,12 @@ namespace XmlBinFileConverter.Models
         {
             var cars = sender as ICollection;
             this.RecordsCount = (uint)(cars == null ? 0 : cars.Count); ///will be validate during serialization
+        }
+
+        private void SunbscribeCarsCollectionEvents()
+        {
+            base.Cars.CollectionChanged += CarsCollectionChanged;
+            CarsCollectionChanged(base.Cars, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         internal short headerField = headerValue;

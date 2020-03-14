@@ -54,9 +54,9 @@ namespace XmlBinFileConverter
             xmlFiles = xmlConv.Read(files.Keys.ToArray());
                 
             XmlCarsFile file_1 = xmlFiles[Path.Combine(path, String.Format("{0}.cxml", 1))];
-            file_1.Cars.Add(new XmlCar(DateTime.Now.AddDays(1), "BMW", 40000));
-            file_1.Cars.Add(new XmlCar(DateTime.Now.AddMonths(2), "ZAZ", 300));
-            file_1.Cars.Add(new XmlCar(DateTime.Now.AddMonths(-3), "WRANGLER", 60000));
+            file_1.Cars.Add(new XmlCar { Date = DateTime.Now.AddDays(1), BrandName = "BMW", Price = 40000 });
+            file_1.Cars.Add(new XmlCar { Date = DateTime.Now.AddMonths(2), BrandName = "ZAZ", Price = 300 });
+            file_1.Cars.Add(new XmlCar { Date = DateTime.Now.AddMonths(-3), BrandName = "WRANGLER", Price = 60000 });
 
             Console.WriteLine("Saves modified file");
 
@@ -125,8 +125,8 @@ namespace XmlBinFileConverter
             for (int i = 0; i < filesCount; i++)
             {
                 XmlCarsFile file = GenerateXMLFile(
-                    new XmlCar(DateTime.Now, "Alpha Romeo Brera", 37000),
-                    new XmlCar(DateTime.Now.AddDays(1), "Mazda", 25000));
+                    new XmlCar { Date = DateTime.Now, BrandName = "Alpha Romeo Brera", Price = 37000 },
+                    new XmlCar { Date = DateTime.Now.AddDays(1), BrandName = "Mazda", Price = 25000 });
 
                 files.Add(Path.Combine(path, String.Format("{0}.cxml", i)), file);
             }

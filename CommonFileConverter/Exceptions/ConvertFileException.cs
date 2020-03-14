@@ -5,6 +5,7 @@ namespace CommonFileConverter.Exceptions
     /// <summary>
     /// Represents exception occurred during file conversion
     /// </summary>
+    [Serializable]
     public class ConvertFileException : FileException
     {
         public ConvertFileException() : base() { }

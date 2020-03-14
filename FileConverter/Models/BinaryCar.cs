@@ -11,12 +11,14 @@ namespace XmlBinFileConverter.Models
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public class BinaryCar : XmlCar, IInitializable<XmlCar>, IEquatable<BinaryCar>
     {
-        const string binaryDateFormat = "ddMMyyyy";
-        const int maxLenghtOfunicodeBrandName = 2;
-
         public BinaryCar() { }
 
-        public ushort BrandNameLength { get; internal set; }
+        public ushort BrandNameLength 
+        {
+            get { return brandNameLengthField; }
+            internal set { brandNameLengthField = value; }
+        }
+
         [StringLength(maxLenghtOfunicodeBrandName, ErrorMessage = XmlBinMessages.StringExceedsMaxLenght + XmlBinMessages.FileStructureFields.CarFields.BrandName)]
         public override string BrandName
         {
@@ -71,13 +73,23 @@ namespace XmlBinFileConverter.Models
 
         #region  IInitializable<XmlCar>
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes",
+            Justification = "Externally visible method is provided with the same functionality but with different name: InitializeFromXml(XmlCar from)")]
         void IInitializable<XmlCar>.Initialize(XmlCar from)
         {
-            this.BrandName = from.BrandName;
-            this.Date = from.Date;
-            this.Price = from.Price;
+            InitializeFromXml(from);
+        }
+
+        protected virtual void InitializeFromXml(XmlCar from)
+        {
+            BrandName = from.BrandName;
+            Date = from.Date;
+            Price = from.Price;
         }
 
         #endregion
+
+        const string binaryDateFormat = "ddMMyyyy";
+        const int maxLenghtOfunicodeBrandName = 2;
     }
 }

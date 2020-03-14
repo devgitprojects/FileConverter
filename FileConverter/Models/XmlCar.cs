@@ -20,22 +20,37 @@ namespace XmlBinFileConverter.Models
         const string xmlDateFormat = "dd.MM.yyyy";
 
         public XmlCar() { }
-        public XmlCar(DateTime date, string brandName, uint price) 
+
+        public DateTime Date
         {
-            Date = date;
-            BrandName = brandName;
-            Price = price;
+            get { return dateField; }
+            set { dateField = value; }
         }
 
-        public DateTime Date { get; set; }
-        public virtual string BrandName { get; set; }
-        public uint Price { get; set; }
+        public virtual string BrandName
+        {
+            get { return brandNameField; }
+            set { brandNameField = value; }
+        }
+
+        public uint Price
+        {
+            get { return priceField; }
+            set { priceField = value; }
+        }
 
         #region IConvertible<XmlCar>
 
         TTo IConvertible<XmlCar>.Convert<TTo>(Mapper<XmlCar, TTo> mapper)
         {
-            throw new NotImplementedException();
+            return Convert(mapper);
+        }
+
+        protected virtual TTo Convert<TTo>(Mapper<XmlCar, TTo> mapper)
+            where TTo : IInitializable<XmlCar>, new()
+        {
+            mapper.ThrowArgumentNullExceptionIfNull();
+            return mapper.Convert(this);
         }
 
         #endregion
@@ -67,7 +82,14 @@ namespace XmlBinFileConverter.Models
 
         #region IInitializable<BinaryCar>
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes",
+            Justification = "Externally visible method is provided with the same functionality but with different name: InitializeFromBinaryCar(BinaryCar from)")]
         void IInitializable<BinaryCar>.Initialize(BinaryCar from)
+        {
+            InitializeFromBinaryCar(from);
+        }
+
+        protected virtual void InitializeFromBinaryCar(BinaryCar from)
         {
             from.ThrowArgumentNullExceptionIfNull();
             BrandName = from.BrandName;
@@ -89,7 +111,7 @@ namespace XmlBinFileConverter.Models
             reader.ReadStartElement();
             Date = DateTime.ParseExact(reader.ReadElementString(XmlBinMessages.FileStructureFields.CarFields.Date), xmlDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal);
             BrandName = reader.ReadElementString(XmlBinMessages.FileStructureFields.CarFields.BrandName);
-            Price = Convert.ToUInt32(reader.ReadElementString(XmlBinMessages.FileStructureFields.CarFields.Price));
+            Price = System.Convert.ToUInt32(reader.ReadElementString(XmlBinMessages.FileStructureFields.CarFields.Price));
             reader.ReadEndElement();
         }
 
@@ -101,6 +123,10 @@ namespace XmlBinFileConverter.Models
         }
 
         #endregion
-    }
 
+        private DateTime dateField;
+        protected ushort brandNameLengthField;
+        private string brandNameField;
+        private uint priceField;
+    }
 }

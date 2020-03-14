@@ -17,12 +17,16 @@ namespace XmlBinFileConverter.Models
         public BaseCarsFile(CarsCollection<TCar> cars)
         {
             cars.ThrowArgumentNullExceptionIfNull();
-            Cars = cars;
+            carsField = cars;
         }
 
         [XmlElement(XmlBinMessages.FileStructureFields.Car)]
         [Required(ErrorMessage = XmlBinMessages.CollectionShouldContainZeroOrMoreItems + XmlBinMessages.FileStructureFields.Cars)]
-        public virtual CarsCollection<TCar> Cars { get; set; }
+        public virtual CarsCollection<TCar> Cars 
+        { 
+            get { return carsField; }
+            set { carsField = value; }
+        }
 
         public override void Validate()
         {
@@ -50,5 +54,7 @@ namespace XmlBinFileConverter.Models
         }
 
         #endregion
+
+        private CarsCollection<TCar> carsField;
     }
 }

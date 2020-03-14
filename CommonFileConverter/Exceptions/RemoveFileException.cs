@@ -5,6 +5,7 @@ namespace CommonFileConverter.Exceptions
     /// <summary>
     /// Represents exception occurred during file removing
     /// </summary>
+    [Serializable]
     public class RemoveFileException : FileException
     {
         public RemoveFileException() : base() { }

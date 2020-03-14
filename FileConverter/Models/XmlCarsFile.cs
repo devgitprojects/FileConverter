@@ -18,6 +18,12 @@ namespace XmlBinFileConverter.Models
 
         TTo IConvertible<XmlCarsFile>.Convert<TTo>(Mapper<XmlCarsFile, TTo> mapper)
         {
+            return Convert(mapper);
+        }
+
+        protected virtual TTo Convert<TTo>(Mapper<XmlCarsFile, TTo> mapper)
+            where TTo : IInitializable<XmlCarsFile>, new()
+        {
             mapper.ThrowArgumentNullExceptionIfNull();
             return mapper.Convert(this);
         }
@@ -27,6 +33,11 @@ namespace XmlBinFileConverter.Models
         #region  IInitializable<BinaryBasedFileStructure>
 
         void IInitializable<BinaryCarsFile>.Initialize(BinaryCarsFile from)
+        {
+            Initialize(from);
+        }
+
+        protected virtual void Initialize(BinaryCarsFile from)
         {
             from.ThrowArgumentNullExceptionIfNull();
             Cars = new CarsCollection<XmlCar>(from.Cars.Convert(new Mapper<BinaryCar, XmlCar>()));
